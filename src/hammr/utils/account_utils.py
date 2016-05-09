@@ -447,6 +447,25 @@ def gce(account):
     return myCredAccount
 
 
+def outscale(account):
+    myCredAccount = CredAccountOutscale()
+    # doing field verification
+    if not "name" in account:
+        printer.out("name for outscale account not found", printer.ERROR)
+        return
+    if not "accessKey" in account:
+        printer.out("accessKey in outscale account not found", printer.ERROR)
+        return
+    if not "secretAccessKey" in account:
+        printer.out("secretAccessKey in outscale account not found", printer.ERROR)
+        return
+
+    myCredAccount.secretAccessKeyID = account["secretAccessKey"]
+    myCredAccount.accessKeyID = account["accessKey"]
+    myCredAccount.name = account["name"]
+    return myCredAccount
+
+
 def get_target_platform_object(api, login, targetPlatformName):
     targetPlatformsUser = api.Users(login).Targetplatforms.Getall()
     if targetPlatformsUser is None or len(targetPlatformsUser.targetPlatforms.targetPlatform) == 0:

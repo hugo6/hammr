@@ -316,3 +316,15 @@ def publish_gce(pimage, builder):
     pimage.credAccount.zoneName = builder["computeZone"]
     pimage.publishLocation = builder["bucketLocation"]
     return pimage
+
+
+def publish_outscale(pimage, builder):
+    # doing field verification
+    if not "zone" in builder:
+        printer.out("zone in outscale builder not found", printer.ERROR)
+        return
+    if not "description" in builder:
+        pimage.credAccount.description = builder["description"]
+
+    pimage.credAccount.zoneName = builder["zone"]
+    return pimage
