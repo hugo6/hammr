@@ -264,11 +264,25 @@ class Template(Cmd, CoreGlobal):
                     for bundle in template["stack"]["bundles"]:
                         if "files" in bundle:
                             for files in bundle["files"]:
-                                #add to list of file to tar
-                                file_tar_path=constants.FOLDER_BUNDLES + os.sep + generics_utils.remove_URI_forbidden_char(bundle["name"]) + os.sep + generics_utils.remove_URI_forbidden_char(bundle["version"]) + os.sep + generics_utils.remove_URI_forbidden_char(ntpath.basename(files["source"]))
-                                archive_files.append([file_tar_path,files["source"]])
-                                #changing source path to archive related source path
-                                files["source"]=file_tar_path
+                                if os.path.isdir(files["source"]):
+                                    # creating an archive and add it to the file_tar_path
+                                    output_filename = files["name"] + ".tar.gz"
+                                    file_tar_path=constants.FOLDER_BUNDLES + os.sep + generics_utils.remove_URI_forbidden_char(bundle["name"]) + os.sep + generics_utils.remove_URI_forbidden_char(bundle["version"]) + os.sep + generics_utils.remove_URI_forbidden_char(output_filename)
+                                    source_dir = files["source"]
+                                    with tarfile.open(output_filename, "w:gz") as tar:
+                                        tar.add(source_dir, arcname=os.path.basename(source_dir))
+                                        tar.close
+                                    archive_files.append([file_tar_path,output_filename])
+                                    #changing the name of the file
+                                    files["name"] = output_filename
+                                    #changing source path to archive related source path
+                                    files["source"]=file_tar_path
+                                else:
+                                    #add to list of file to tar
+                                    file_tar_path=constants.FOLDER_BUNDLES + os.sep + generics_utils.remove_URI_forbidden_char(bundle["name"]) + os.sep + generics_utils.remove_URI_forbidden_char(bundle["version"]) + os.sep + generics_utils.remove_URI_forbidden_char(ntpath.basename(files["source"]))
+                                    archive_files.append([file_tar_path,files["source"]])
+                                    #changing source path to archive related source path
+                                    files["source"]=file_tar_path
                         else:
                             printer.out("No files section found for bundle", printer.ERROR)
                             return 2
