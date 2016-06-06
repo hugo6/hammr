@@ -235,12 +235,16 @@ class Template(Cmd, HammrGlobal):
                                                 printer.out("No source file found in config", printer.ERROR)
                                                 return 2
                         try:
+                                checkList = []
                                 if "bundles" in template["stack"]:
                                         for bundle in template["stack"]["bundles"]:
                                                 if "files" in bundle:
                                                         for files in bundle["files"]:
-                                                                #if file or directory
-                                                                if os.path.isdir(files["source"]):
+                                                                #if it's a directory
+                                                                if os.path.isdir(files["source"]) and ntpath.basename(files["source"]) not in checkList:
+                                                                        #add the source path to the check list
+                                                                        checkList.append(ntpath.basename(files["source"]))
+
                                                                         # creating an archive and add it to the file_tar_path
                                                                         output_filename = files["name"] + ".tar.gz"
                                                                         file_tar_path=constants.FOLDER_BUNDLES + os.sep + generics_utils.remove_URI_forbidden_char(bundle["name"]) + os.sep + generics_utils.remove_URI_forbidden_char(bundle["version"]) + os.sep + generics_utils.remove_URI_forbidden_char(output_filename)
@@ -255,12 +259,19 @@ class Template(Cmd, HammrGlobal):
 
                                                                         #changing source path to archive related source path
                                                                         files["source"]=file_tar_path
-                                                                else:
+                                                                #if it's a file
+                                                                elif not os.path.isdir(files["source"]) and ntpath.basename(files["source"]) not in checkList:
+                                                                        #add the source path to the check list
+                                                                        checkList.append(ntpath.basename(files["source"]))
+
                                                                         #add to list of file to tar
                                                                         file_tar_path=constants.FOLDER_BUNDLES + os.sep + generics_utils.remove_URI_forbidden_char(bundle["name"]) + os.sep + generics_utils.remove_URI_forbidden_char(bundle["version"]) + os.sep + generics_utils.remove_URI_forbidden_char(ntpath.basename(files["source"]))
                                                                         archive_files.append([file_tar_path,files["source"]])
                                                                         #changing source path to archive related source path
                                                                         files["source"]=file_tar_path
+                                                                else:
+                                                                        printer.out("found two files with the same source path in the bundles section", printer.ERROR)
+                                                                        return 2
                                                 else:
                                                         printer.out("No files section found for bundle", printer.ERROR)
                                                         return 2
