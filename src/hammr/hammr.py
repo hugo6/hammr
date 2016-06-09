@@ -33,7 +33,6 @@ from uforge.application import Api
 from utils import printer
 from utils import generics_utils
 from utils import constants
-import httplib2
 
 __author__ = "UShareSoft"
 __license__ = "Apache License 2.0"
