@@ -167,6 +167,8 @@ CoreArgumentParser.actions=myactions
 mainParser.add_argument('-a', '--url', dest='url', type=str, help='the UForge server URL endpoint to use', required = False)
 mainParser.add_argument('-u', '--user', dest='user', type=str, help='the user name used to authenticate to the UForge server', required = False)
 mainParser.add_argument('-p', '--password', dest='password', type=str, help='the password used to authenticate to the UForge server', required = False)
+mainParser.add_argument('-k', '--publicKey', dest='publicKey', type=str, help='the public key to authenticate to the Uforge server', required = False)
+mainParser.add_argument('-s', '--secretKey', dest='secretKey', type=str, help='the secret key to authenticate to the Uforge server', required = False)
 mainParser.add_argument('-c', '--credentials', dest='credentials', type=str, help='the credential file used to authenticate to the UForge server (default to ~/.hammr/credentials.json)', required = False)
 mainParser.add_argument('-v', action='version', help='displays the current version of the hammr tool', version="%(prog)s version '"+constants.VERSION+"'")
 mainParser.add_argument('-h', '--help', dest='help', action='store_true', help='show this help message and exit', required = False)
@@ -178,20 +180,44 @@ if mainArgs.help and not mainArgs.cmds:
     mainParser.print_help()
     exit(0)
 
-if mainArgs.url is not None:
-    url=mainArgs.url
+userpassAuthentication = False
+apikeysAuthentication = False
+sslAutosigned=True
+password = None
 
-if mainArgs.user is not None:
-    if not mainArgs.password:
-        mainArgs.password = getpass.getpass()
+if mainArgs.user is not None and mainArgs.publicKey is not None and mainArgs.secretKey is not None:
+    #using API key cmd lines
+    if mainArgs.url:
+        url=mainArgs.url
+    else:
+        printer.out("url not found in commands", printer.ERROR)
+        exit(1)
+    printer.out("Using url " + url, printer.INFO)
     username=mainArgs.user
-    password=mainArgs.password
-    sslAutosigned=True
+    publicKey = mainArgs.publicKey
+    secretKey = mainArgs.secretKey
+    apikeysAuthentication = True
+    printer.out("public and secret key provided, using the api key mode", printer.INFO)
+elif mainArgs.user is not None:
+    #using userpass in cmd lines
+    if mainArgs.url:
+        url=mainArgs.url
+    else:
+        printer.out("url not found in commands", printer.ERROR)
+        exit(1)
+    printer.out("Using url " + url, printer.INFO)
+    printer.out("no public and secret key provided, using the user+password mode", printer.INFO)
+    username=mainArgs.user
+    if not mainArgs.password:
+        password = getpass.getpass()
+    else:
+        password=mainArgs.password
+    userpassAuthentication=True
 else:
     credfile="credentials.json"
     if mainArgs.credentials is not None:
         credfile=mainArgs.credentials
-    printer.out("no username nor password provided on command line, trying credentials file", printer.INFO)
+    printer.out("no username provided on command line, trying credentials file", printer.INFO)
     credpath=check_credfile(credfile)
     if credpath is None:
         printer.out("credentials file " + credfile + " not found\n", printer.ERROR)
@@ -201,36 +227,47 @@ else:
         json_data=open(credpath)
         data = json.load(json_data)
         json_data.close()
-        if mainArgs.user:
-            username=mainArgs.user
-        elif "user" in data:
-            username=data["user"]
-        else:
-            printer.out("username not found in credentials file", printer.ERROR, 1)
-        if mainArgs.password:
-            password=mainArgs.password
-        elif "password" in data:
-            password=data["password"]
-        else:
-            printer.out("password not found in credentials file", printer.ERROR, 1)
         if mainArgs.url:
             url=mainArgs.url
         elif "url" in data:
             url=data["url"]
         else:
-            printer.out("url not found in credentials file", printer.ERROR, 1)
+            printer.out("url not found in commands nor in credentials file", printer.ERROR)
+            exit(1)
         printer.out("Using url " + url, printer.INFO)
+        if"user" in data:
+            username=data["user"]
+        else:
+            printer.out("username not found in credentials file", printer.ERROR)
+            exit(1)
+        if "publicKey" in data and "secretKey" in data:
+            printer.out("public and secret key provided, using the api key mode", printer.INFO)
+            publicKey=data["publicKey"]
+            secretKey=data["secretKey"]
+            apikeysAuthentication = True
+        elif mainArgs.password:
+            password=mainArgs.password
+            userpassAuthentication = True
+        elif "password" in data:
+            password=data["password"]
+            userpassAuthentication = True
+        else:
+            printer.out("no password or no public+secret api key found in credentials file", printer.ERROR)
+            exit(1)
         if "acceptAutoSigned" in data:
             sslAutosigned=data["acceptAutoSigned"]
-        else:
-            sslAutosigned=True
     except ValueError as e:
-        printer.out("JSON parsing error in credentials file: "+str(e), printer.ERROR, 1)
+        printer.out("JSON parsing error in credentials file: "+str(e), printer.ERROR)
     except IOError as e:
-        printer.out("File error in credentials file: "+str(e), printer.ERROR, 1)
+        printer.out("File error in credentials file: "+str(e), printer.ERROR)
+
+apikeys = {}
+if apikeysAuthentication is True:
+    apikeys['publickey'] = publicKey
+    apikeys['secretkey'] = secretKey
 
 #UForge API instanciation
-api = Api(url, username = username, password = password, headers = None, disable_ssl_certificate_validation = sslAutosigned, timeout = constants.HTTP_TIMEOUT)
+api = Api(url, username = username, password = password, headers = None, apikeys = apikeys, disable_ssl_certificate_validation = sslAutosigned, timeout = constants.HTTP_TIMEOUT)
 
 if generics_utils.is_superviser_mode(username):
     login = generics_utils.get_target_username(username)
