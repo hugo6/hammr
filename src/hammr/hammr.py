@@ -185,7 +185,7 @@ if mainArgs.user is not None and mainArgs.publicKey is not None and mainArgs.sec
     if mainArgs.url:
         url=mainArgs.url
     else:
-        printer.out("url not found in commands nor in credentials file", printer.ERROR, 1)
+        printer.out("url not found in commands nor in credentials file", printer.ERROR)
         exit(1)
     printer.out("Using url " + url, printer.INFO)
     username=mainArgs.user
@@ -198,7 +198,7 @@ elif mainArgs.user is not None:
     if mainArgs.url:
         url=mainArgs.url
     else:
-        printer.out("url not found in commands nor in credentials file", printer.ERROR, 1)
+        printer.out("url not found in commands nor in credentials file", printer.ERROR)
         exit(1)
     printer.out("Using url " + url, printer.INFO)
     printer.out("no public and secret key provided, using the user+password mode", printer.INFO)
@@ -228,14 +228,14 @@ else:
         elif "url" in data:
             url=data["url"]
         else:
-            printer.out("url not found in commands nor in credentials file", printer.ERROR, 1)
+            printer.out("url not found in commands nor in credentials file", printer.ERROR)
             exit(1)
         printer.out("Using url " + url, printer.INFO)
 
         if"user" in data:
             username=data["user"]
         else:
-            printer.out("username not found in credentials file", printer.ERROR, 1)
+            printer.out("username not found in credentials file", printer.ERROR)
             exit(1)
         if "publicKey" in data and "secretKey" in data:
             printer.out("public and secret key provided, using the api key mode", printer.INFO)
@@ -249,15 +249,15 @@ else:
             password=data["password"]
             userpassAuthentication = True
         else:
-            printer.out("no password or no public+secret api key found in credentials file", printer.ERROR, 1)
+            printer.out("no password or no public+secret api key found in credentials file", printer.ERROR)
             exit(1)
 
         if "acceptAutoSigned" in data:
             sslAutosigned=data["acceptAutoSigned"]
     except ValueError as e:
-        printer.out("JSON parsing error in credentials file: "+str(e), printer.ERROR, 1)
+        printer.out("JSON parsing error in credentials file: "+str(e), printer.ERROR)
     except IOError as e:
-        printer.out("File error in credentials file: "+str(e), printer.ERROR, 1)
+        printer.out("File error in credentials file: "+str(e), printer.ERROR)
 
 apikeys = {}
 if apikeysAuthentication is True:
