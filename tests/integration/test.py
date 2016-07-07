@@ -2,17 +2,22 @@ import unittest
 import sys
 import os
 
+from hammr.utils import printer
 import hammr.commands
 from uforge.application import Api
 
-if not "TEST_USER" in os.environ or not "TEST_PASSWORD" in os.environ or not "TEST_URL" in os.environ:
-        print "Set env varaible [TEST_USER], [TEST_PASSWORD], and [TEST_URL]"
+printer.out("Please be sure that you are using the user with root privileges ", printer.WARNING)
+
+if not "TEST_USER" in os.environ or not "TEST_PASSWORD" in os.environ or not "TEST_URL" in os.environ or not "TEST_PUBLICKEY" in os.environ and not "TEST_SECRETKEY" in os.environ:
+        print "Set env varaible [TEST_USER], [TEST_PASSWORD], [TEST_URL], [TEST_PUBLICKEY] and [TEST_SECRETKEY]"
         sys.exit(1)
 
 login=os.environ['TEST_USER']
 password=os.environ['TEST_PASSWORD']
 url=os.environ['TEST_URL']
-
+apikeys = {}
+apikeys['publickey']=os.environ['TEST_PUBLICKEY']
+apikeys['secretkey']=os.environ['TEST_SECRETKEY']
 
 
 def get_template_id(template, name):
@@ -56,7 +61,6 @@ class TestCLI(unittest.TestCase):
                 self.assertEqual(r, None)
 
 
-class TestTemplate(unittest.TestCase):
 
         global api
         api = Api(url, username = login, password = password, headers = None, disable_ssl_certificate_validation = True)
@@ -73,7 +77,29 @@ class TestTemplate(unittest.TestCase):
                 r = template.do_validate("--file data/template.json")
                 self.assertEqual(r, 0)
 
-        def test_03_delete(self):
+        def test_03_create(self):
+                template = hammr.commands.template.Template()
+                template.set_globals(api, login, password)
+                r = template.do_create("--file data/template.json")
+                self.assertEqual(r, 0)
+
+        def test_04_export(self):
+                template = hammr.commands.template.Template()
+                template.set_globals(api, login, password)
+                id = get_template_id(template, "unittest")
+                r = template.do_export("--id "+id)
+                self.assertEqual(r, 0)
+
+        def test_05_import(self):
+                template = hammr.commands.template.Template()
+                template.set_globals(api, login, password)
+                id = get_template_id(template, "unittest")
+                template.do_delete("--id "+id+" --no-confirm")
+                r = template.do_import("--file archive.tar.gz")
+                os.remove("archive.tar.gz")
+                self.assertEqual(r, 0)
+
+        def test_06_delete(self):
                 template = hammr.commands.template.Template()
                 template.set_globals(api, login, password)
                 id = get_template_id(template, "unittest")
@@ -83,32 +109,10 @@ class TestTemplate(unittest.TestCase):
                 else:
                         raise unittest.SkipTest("No template to delete")
 
-        def test_04_create(self):
-                template = hammr.commands.template.Template()
-                template.set_globals(api, login, password)
-                r = template.do_create("--file data/template.json")
-                self.assertNotEqual(r, None)
-
-        def test_05_build(self):
+        def test_07_build(self):
                 template = hammr.commands.template.Template()
                 template.set_globals(api, login, password)
                 r = template.do_build("--file data/template.json")
-                self.assertEqual(r, 0)
-
-        def test_06_export(self):
-                template = hammr.commands.template.Template()
-                template.set_globals(api, login, password)
-                id = get_template_id(template, "unittest")
-                r = template.do_export("--id "+id)
-                self.assertEqual(r, 0)
-
-        def test_07_import(self):
-                template = hammr.commands.template.Template()
-                template.set_globals(api, login, password)
-                id = get_template_id(template, "unittest")
-                template.do_delete("--id "+id+" --no-confirm")
-                r = template.do_import("--file archive.tar.gz")
-                os.remove("archive.tar.gz")
                 self.assertEqual(r, 0)
 
         def test_08_0_templateFull(self):
@@ -116,7 +120,7 @@ class TestTemplate(unittest.TestCase):
                 template = hammr.commands.template.Template()
                 template.set_globals(api, login, password)
                 r = template.do_create("--file data/templateFull.json --force")
-                self.assertNotEqual(r, None)
+                self.assertEqual(r, 0)
 
         def test_08_1_exportCentOS6(self):
                 template = hammr.commands.template.Template()
@@ -124,10 +128,6 @@ class TestTemplate(unittest.TestCase):
                 id = get_template_id(template, "templateFull")
                 r = template.do_export("--id "+id)
                 self.assertEqual(r, 0)
-
-
-
-
 
 
 class TestOs(unittest.TestCase):
@@ -154,7 +154,6 @@ class TestQuota(unittest.TestCase):
                 self.assertEqual(r, 0)
 
 
-
 class TestUser(unittest.TestCase):
 
         global api
@@ -166,8 +165,7 @@ class TestUser(unittest.TestCase):
                 r = user.do_info(None)
                 self.assertEqual(r, 0)
 
-                
-                
+
 class TestAccount(unittest.TestCase):
 
         global api
@@ -225,6 +223,7 @@ class TestFormat(unittest.TestCase):
                 r = format.do_list(None)
                 self.assertEqual(r, 0)
 
+
 class TestBundle(unittest.TestCase):
 
         global api
@@ -247,8 +246,18 @@ class TestImage(unittest.TestCase):
                 image.set_globals(api, login, password)
                 r = image.do_list(None)
                 self.assertEqual(r, 0)
-        
 
+
+class TestApiKeyAuthentification(unittest.TestCase):
+
+        global api
+        api = Api(url, username = login, password = password, headers = None, disable_ssl_certificate_validation = True, apikeys = apikeys)
+
+        def test_template_create_with_apiKeys(self):
+                user = hammr.commands.user.User()
+                user.set_globals(api, login, password)
+                r = user.do_info(None)
+                self.assertEqual(r, 0)
 
 
 if __name__ == '__main__':

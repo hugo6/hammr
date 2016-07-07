@@ -25,14 +25,14 @@ except Exception as e:
 	print e
 	exit(10)
 
-from lib.cmdHamr import Cmd, CmdUtils
-from lib.argumentParser import HammrArgumentParser, ArgumentParser, ArgumentParserError
 import commands as cmds
-
+from lib.cmdHamr import Cmd
+from lib.argumentParser import HammrArgumentParser, ArgumentParser, ArgumentParserError
 from uforge.application import Api
 from utils import printer
 from utils import generics_utils
 from utils import constants
+from utils import credentials_utils
 
 __author__ = "UShareSoft"
 __license__ = "Apache License 2.0"
@@ -42,8 +42,8 @@ class CmdBuilder(object):
     def generateCommands(class_):
         # Create subCmds if not exist
         if not hasattr(class_, 'subCmds'):
-            class_.subCmds = {} 
-        # Add commands                
+            class_.subCmds = {}
+        # Add commands
         user = cmds.user.User()
         class_.subCmds[user.cmd_name] = user
         template = cmds.template.Template()
@@ -55,7 +55,7 @@ class CmdBuilder(object):
         image = cmds.image.Image()
         class_.subCmds[image.cmd_name] = image
         account = cmds.account.Account()
-        class_.subCmds[account.cmd_name] = account                
+        class_.subCmds[account.cmd_name] = account
         bundle = cmds.bundle.Bundle()
         class_.subCmds[bundle.cmd_name] = bundle
         scan = cmds.scan.Scan()
@@ -82,7 +82,7 @@ class Hammr(Cmd):
             doParser = ArgumentParser("batch", add_help = True, description="Execute hammr batch command from a file (for scripting)")
             mandatory = doParser.add_argument_group("mandatory arguments")
             mandatory.add_argument('--file', dest='file', required=True, help="hammr batch file commands")
-            return doParser      
+            return doParser
 
     def do_batch(self, args):
         try:
@@ -91,7 +91,7 @@ class Hammr(Cmd):
                 doArgs = doParser.parse_args(args.split())
             except SystemExit as e:
                 return
-            with open(doArgs.file) as f:             
+            with open(doArgs.file) as f:
                 for line in f:
                     try:
                         self.run_commands_at_invocation([line])
@@ -114,7 +114,7 @@ class Hammr(Cmd):
             code = self.run_commands_at_invocation([str.join(' ', args)])
             sys.exit(code)
         else:
-            self._cmdloop() 
+            self._cmdloop()
 
 def generate_base_doc(app, hamm_help):
     myactions=[]
@@ -132,24 +132,13 @@ def generate_base_doc(app, hamm_help):
          help=str(app.subCmds[cmd].__doc__),
          metavar=None))
     return myactions
-    
+
 def set_globals_cmds(subCmds):
     for cmd in subCmds:
         if hasattr(subCmds[cmd], 'set_globals'):
-            subCmds[cmd].set_globals(api, login, password)
+            subCmds[cmd].set_globals(api, login, credentials.password)
             if hasattr(subCmds[cmd], 'subCmds'):
                 set_globals_cmds(subCmds[cmd].subCmds)
-
-def check_credfile(credfile):
-    if os.path.isfile(credfile):
-        return credfile
-    if not credfile.endswith(".json") and os.path.isfile(credfile + ".json"):
-        return credfile + ".json"
-    if os.path.isfile(generics_utils.get_hammr_dir()+os.sep+credfile):
-        return generics_utils.get_hammr_dir()+os.sep+credfile
-    if not credfile.endswith(".json") and os.path.isfile(generics_utils.get_hammr_dir()+os.sep+credfile+".json"):
-        return generics_utils.get_hammr_dir()+os.sep+credfile+".json"
-    return None
 
 #Generate hammr base command + help base command
 CmdBuilder.generateCommands(Hammr)
@@ -175,101 +164,31 @@ if mainArgs.help and not mainArgs.cmds:
     mainParser.print_help()
     exit(0)
 
-userpassAuthentication = False
-apikeysAuthentication = False
-sslAutosigned=True
-password = None
-
+credentials = credentials_utils.Credential()
 if mainArgs.user is not None and mainArgs.publicKey is not None and mainArgs.secretKey is not None:
-    #using API key cmd lines
-    if mainArgs.url:
-        url=mainArgs.url
-    else:
-        printer.out("url not found in commands nor in credentials file", printer.ERROR)
-        exit(1)
-    printer.out("Using url " + url, printer.INFO)
-    username=mainArgs.user
-    publicKey = mainArgs.publicKey
-    secretKey = mainArgs.secretKey
-    apikeysAuthentication = True
-    printer.out("public and secret key provided, using the api key mode", printer.INFO)
+	#using API key cmd lines
+	credentials.fill_credentials_from_cmd_apiKey(mainArgs)
 elif mainArgs.user is not None:
-    #using userpass in cmd lines
-    if mainArgs.url:
-        url=mainArgs.url
-    else:
-        printer.out("url not found in commands nor in credentials file", printer.ERROR)
-        exit(1)
-    printer.out("Using url " + url, printer.INFO)
-    printer.out("no public and secret key provided, using the user+password mode", printer.INFO)
-    username=mainArgs.user
-    if not mainArgs.password:
-        password = getpass.getpass()
-    else:
-        password=mainArgs.password
-    userpassAuthentication=True
+	#using userpass in cmd lines
+	credentials.fill_credentials_from_cmd_user_password(mainArgs)
 else:
-    credfile="credentials.json"
-    if mainArgs.credentials is not None:
-        credfile=mainArgs.credentials
-    printer.out("no username provided on command line, trying credentials file", printer.INFO)
-    credpath=check_credfile(credfile)
-    if credpath is None:
-        printer.out("credentials file " + credfile + " not found\n", printer.ERROR)
-        exit(1)
-    printer.out("Using credentials file: " + credpath, printer.INFO)
     try:
-        json_data=open(credpath)
-        data = json.load(json_data)
-        json_data.close()
-
-        if mainArgs.url:
-            url=mainArgs.url
-        elif "url" in data:
-            url=data["url"]
-        else:
-            printer.out("url not found in commands nor in credentials file", printer.ERROR)
-            exit(1)
-        printer.out("Using url " + url, printer.INFO)
-
-        if"user" in data:
-            username=data["user"]
-        else:
-            printer.out("username not found in credentials file", printer.ERROR)
-            exit(1)
-        if "publicKey" in data and "secretKey" in data:
-            printer.out("public and secret key provided, using the api key mode", printer.INFO)
-            publicKey=data["publicKey"]
-            secretKey=data["secretKey"]
-            apikeysAuthentication = True
-        elif mainArgs.password:
-            password=mainArgs.password
-            userpassAuthentication = True
-        elif "password" in data:
-            password=data["password"]
-            userpassAuthentication = True
-        else:
-            printer.out("no password or no public+secret api key found in credentials file", printer.ERROR)
-            exit(1)
-
-        if "acceptAutoSigned" in data:
-            sslAutosigned=data["acceptAutoSigned"]
+        credentials.fill_credentials_from_credfile(mainArgs)
     except ValueError as e:
         printer.out("JSON parsing error in credentials file: "+str(e), printer.ERROR)
     except IOError as e:
         printer.out("File error in credentials file: "+str(e), printer.ERROR)
 
 apikeys = {}
-if apikeysAuthentication is True:
-    apikeys['publickey'] = publicKey
-    apikeys['secretkey'] = secretKey
-
+if credentials.apikeysAuthentication is True:
+    apikeys['publickey'] = credentials.publicKey
+    apikeys['secretkey'] = credentials.secretKey
 #UForge API instantiation
-api = Api(url, username = username, password = password, headers = None, disable_ssl_certificate_validation = sslAutosigned, timeout = constants.HTTP_TIMEOUT, apikeys = apikeys)
-if generics_utils.is_superviser_mode(username):
-    login = generics_utils.get_target_username(username)
+api = Api(credentials.url, username = credentials.username, password = credentials.password, headers = None, disable_ssl_certificate_validation = credentials.sslAutosigned, timeout = constants.HTTP_TIMEOUT, apikeys = apikeys)
+if generics_utils.is_superviser_mode(credentials.username):
+    login = generics_utils.get_target_username(credentials.username)
 else:
-    login = username
+    login = credentials.username
 set_globals_cmds(app.subCmds)
 
 if mainArgs.help and len(mainArgs.cmds)>=1:
