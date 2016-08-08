@@ -180,7 +180,6 @@ if mainArgs.help and not mainArgs.cmds:
     mainParser.print_help()
     exit(0)
 
-userpassAuthentication = False
 apikeysAuthentication = False
 sslAutosigned=True
 password = None
@@ -212,7 +211,6 @@ elif mainArgs.user is not None:
         password = getpass.getpass()
     else:
         password=mainArgs.password
-    userpassAuthentication=True
 else:
     credfile="credentials.json"
     if mainArgs.credentials is not None:
@@ -247,10 +245,8 @@ else:
             apikeysAuthentication = True
         elif mainArgs.password:
             password=mainArgs.password
-            userpassAuthentication = True
         elif "password" in data:
             password=data["password"]
-            userpassAuthentication = True
         else:
             printer.out("no password or no public+secret api key found in credentials file", printer.ERROR)
             exit(1)
