@@ -20,7 +20,7 @@ import sys
 import pkg_resources
 
 try:
-	pkg_resources.require("uforge_python_sdk>=3.5.1.2")
+	pkg_resources.require("uforge_python_sdk>=3.5.1.1")
 except Exception as e:
 	print e
 	exit(10)
@@ -33,6 +33,7 @@ from utils import printer
 from utils import generics_utils
 from utils import constants
 from utils import credentials_utils
+from utils.credentials_utils import CredentialException
 
 __author__ = "UShareSoft"
 __license__ = "Apache License 2.0"
@@ -65,9 +66,6 @@ class CmdBuilder(object):
 
 ## Main cmd
 class Hammr(Cmd):
-#    subCmds = {
-#        'tools': CmdUtils
-#    }
     def __init__(self):
         super(Hammr, self).__init__()
         self.prompt = 'hammr> '
@@ -165,22 +163,38 @@ if mainArgs.help and not mainArgs.cmds:
     exit(0)
 
 credentials = credentials_utils.Credential()
-if mainArgs.user is not None and mainArgs.publicKey is not None and mainArgs.secretKey is not None:
-	#using API key cmd lines
-	credentials.fill_credentials_from_cmd_apiKey(mainArgs)
-elif mainArgs.user is not None:
-	#using userpass in cmd lines
-	credentials.fill_credentials_from_cmd_user_password(mainArgs)
-else:
-    try:
-        credentials.fill_credentials_from_credfile(mainArgs)
-    except ValueError as e:
-        printer.out("JSON parsing error in credentials file: "+str(e), printer.ERROR)
-    except IOError as e:
-        printer.out("File error in credentials file: "+str(e), printer.ERROR)
+credentials.url = mainArgs.url
+credentials.username = mainArgs.user
+credentials.publicKey = mainArgs.publicKey
+credentials.secretKey = mainArgs.secretKey
+credentials.credfile = mainArgs.credentials
+credentials.password =  mainArgs.password
+try:
+    if mainArgs.user is not None and mainArgs.publicKey is not None and mainArgs.secretKey is not None:
+        #using API key cmd lines
+        credentials.check_url_presence()
+        printer.out("Using url " + self.url, printer.INFO)
+        printer.out("public and secret key provided, using the api key mode", printer.INFO)
+    elif mainArgs.user is not None:
+        #using userpass in cmd lines
+        credentials.check_url_presence()
+        printer.out("Using url " + self.url, printer.INFO)
+        printer.out("no public and secret key provided, using the user+password mode", printer.INFO)
+        credentials.check_password_and_set_it()
+    else:
+        credentials.fill_credentials_from_credfile()
+
+except ValueError as e:
+    printer.out("JSON parsing error in credentials file: "+str(e), printer.ERROR)
+except IOError as e:
+    printer.out("File error in credentials file: "+str(e), printer.ERROR)
+except CredentialException, e:
+    # printer.out(e, printer.ERROR)
+    printer.out(str(e), printer.ERROR)
+    exit(1)
 
 apikeys = {}
-if credentials.apikeysAuthentication is True:
+if credentials.isApiKey():
     apikeys['publickey'] = credentials.publicKey
     apikeys['secretkey'] = credentials.secretKey
 #UForge API instantiation

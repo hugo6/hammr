@@ -56,12 +56,11 @@ class TestCLI(unittest.TestCase):
         api = Api(url, username = login, password = password, headers = None, disable_ssl_certificate_validation = True)
         def test_01_help_list(self):
                 image = hammr.commands.image.Image()
-		image.set_globals(api, login, password)
+		        image.set_globals(api, login, password)
                 r = image.help_list()
                 self.assertEqual(r, None)
 
-
-
+class TestTemplate(unittest.TestCase):
         global api
         api = Api(url, username = login, password = password, headers = None, disable_ssl_certificate_validation = True)
 

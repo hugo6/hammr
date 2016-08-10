@@ -13,8 +13,6 @@ class Credential:
     def __init__(self):
         self.sslAutosigned = True
         self.password = None
-        self.userpassAuthentication = False
-        self.apikeysAuthentication = False
         self.url = None
         self.username = None
         self.publicKey = None
@@ -30,16 +28,6 @@ class Credential:
     def password(self):
         """Get the current password"""
         return self.password
-
-    @property
-    def userpassAuthentication(self):
-        """Get the current userpassAuthentication"""
-        return self.userpassAuthentication
-
-    @property
-    def apikeysAuthentication(self):
-        """Get the current apikeysAuthentication"""
-        return self.apikeysAuthentication
 
     @property
     def url(self):
@@ -66,81 +54,50 @@ class Credential:
         """Get the current credfile"""
         return self.credfile
 
-
-    def fill_credentials_from_cmd_apiKey(self, mainArgs):
-        self.check_url_presence_and_set_it(mainArgs.url)
-        printer.out("Using url " + self.url, printer.INFO)
-        self.username = mainArgs.user
-        self.publicKey = mainArgs.publicKey
-        self.secretKey = mainArgs.secretKey
-        self.apikeysAuthentication = True
-        printer.out("public and secret key provided, using the api key mode", printer.INFO)
-
-    def check_url_presence_and_set_it(self, url):
-        if url:
-            self.url = url
+    def isApiKey(self):
+        if self.publicKey is not None and self.secretKey is not None:
+            return True
         else:
-            printer.out("url not found in commands nor in credentials file", printer.ERROR)
-            exit(1)
+            return False
 
-    def fill_credentials_from_cmd_user_password(self, mainArgs):
-        self.check_url_presence_and_set_it(mainArgs.url)
-        printer.out("Using url " + self.url, printer.INFO)
-        printer.out("no public and secret key provided, using the user+password mode", printer.INFO)
-        self.username = mainArgs.user
-        self.check_password_and_set_it(mainArgs.password)
-        self.userpassAuthentication = True
-
-    def check_password_and_set_it(self, pw):
-        if not pw:
-            self.password = getpass.getpass()
-        else:
-            self.password = pw
-
-    def fill_credentials_from_credfile(self, mainArgs):
+    def fill_credentials_from_credfile(self):
         self.credfile = "credentials.json"
-        if mainArgs.credentials is not None:
-            self.credfile = mainArgs.credentials
         printer.out("no username provided on command line, trying credentials file", printer.INFO)
         credpath = check_credfile(self.credfile)
         if credpath is None:
-            printer.out("credentials file " + self.credfile + " not found\n", printer.ERROR)
-            exit(1)
+            raise CredentialException("credentials file " + self.credfile + " not found\n")
         printer.out("Using credentials file: " + credpath, printer.INFO)
         json_data = open(credpath)
         data = json.load(json_data)
         json_data.close()
 
-        if mainArgs.url:
-            self.url = mainArgs.url
-        elif "url" in data:
+        if "url" in data and self.url is None:
             self.url = data["url"]
-        else:
-            printer.out("url not found in commands nor in credentials file", printer.ERROR)
-            exit(1)
+        elif "url" not in data and self.url is None:
+            raise CredentialException("url not found in commands nor in credentials file")
         printer.out("Using url " + self.url, printer.INFO)
         if "user" in data:
             self.username = data["user"]
         else:
-            printer.out("username not found in credentials file", printer.ERROR)
-            exit(1)
+            raise CredentialException("username not found in credentials file")
         if "publicKey" in data and "secretKey" in data:
             printer.out("public and secret key provided, using the api key mode", printer.INFO)
             self.publicKey = data["publicKey"]
             self.secretKey = data["secretKey"]
-            self.apikeysAuthentication = True
-        elif mainArgs.password:
-            self.password = mainArgs.password
-            self.userpassAuthentication = True
-        elif "password" in data:
+        elif "password" in data and self.password is None:
             self.password = data["password"]
-            self.userpassAuthentication = True
-        else:
-            printer.out("no password or no public+secret api key found in credentials file", printer.ERROR)
-            exit(1)
+        elif "publicKey" not in data and "secretKey" not in data and "password" not in data and self.password is None:
+            raise CredentialException("no password or no public-secret api key found in credentials file")
         if "acceptAutoSigned" in data:
             self.sslAutosigned = data["acceptAutoSigned"]
 
+    def check_url_presence(self):
+            if self.url is None:
+                raise CredentialException("url not found in commands nor in credentials file")
+
+    def check_password_and_set_it(self):
+        if self.password is None:
+            self.password = getpass.getpass()
 
 def check_credfile(credfile):
     if os.path.isfile(credfile):
@@ -152,3 +109,10 @@ def check_credfile(credfile):
     if not credfile.endswith(".json") and os.path.isfile(generics_utils.get_hammr_dir()+os.sep+credfile+".json"):
         return generics_utils.get_hammr_dir()+os.sep+credfile+".json"
     return None
+
+class CredentialException(Exception):
+    def __init__(self,reason):
+        self.reason = reason
+
+    def __str__(self):
+        return self.reason
