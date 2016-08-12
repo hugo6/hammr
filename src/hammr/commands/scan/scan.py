@@ -208,12 +208,12 @@ class Scan(Cmd, CoreGlobal):
                 return
             try:
                 myScannedInstances = self.api.Users(self.login).Scannedinstances.Getall(Includescans="true")
-                if myScannedInstances is None or not hasattr(myScannedInstances, 'get_scannedInstance'):
+                if myScannedInstances is None or not hasattr(myScannedInstances, 'scannedInstances'):
                     printer.out("scan not found", printer.ERROR)
                     return
                 else:
                     myScan = None
-                    for myScannedInstance in myScannedInstances.get_scannedInstance():
+                    for myScannedInstance in myScannedInstances.scannedInstances.scannedInstance:
                         for scan in myScannedInstance.scans.scan:
                             if str(scan.dbId) == doArgs.id:
                                 myScan = scan
@@ -228,6 +228,11 @@ class Scan(Cmd, CoreGlobal):
                         printer.out(
                             "Generating '" + builder["type"] + "' image (" + str(i) + "/" + str(len(builders)) + ")")
                         format_type = builder["type"]
+                        targetFormat = generate_utils.get_target_format_object(self.api, self.login, format_type)
+
+                        if targetFormat is None:
+                            printer.out("Builder type unknown: "+format_type, printer.ERROR)
+                            return 2
                         myimage = image()
 
                         myinstallProfile = installProfile()
@@ -235,36 +240,15 @@ class Scan(Cmd, CoreGlobal):
                             myinstallProfile.swapSize = builder["installation"]["swapSize"]
                         myinstallProfile.diskSize = builder["installation"]["diskSize"]
 
-                        if format_type in generate_utils.CLOUD_FORMATS:
-                            func = getattr(generate_utils,
-                                           "generate_" + generics_utils.remove_special_chars(format_type), None)
-                            if func:
-                                myimage, myimageFormat, myinstallProfile = func(myimage, builder, myinstallProfile,
-                                                                                self.api, self.login)
-                            else:
-                                printer.out("Builder type unknown: " + format_type, printer.ERROR)
-                                return
-                        elif format_type in generate_utils.VIRTUAL_FORMATS:
-                            func = getattr(generate_utils,
-                                           "generate_" + generics_utils.remove_special_chars(format_type), None)
-                            if func:
-                                myimage, myimageFormat, myinstallProfile = func(myimage, builder, myinstallProfile)
-                            else:
-                                printer.out("Builder type unknown: " + format_type, printer.ERROR)
-                                return
-                        elif format_type in generate_utils.PHYSICAL_FORMATS:
-                            func = getattr(generate_utils,
-                                           "generate_" + generics_utils.remove_special_chars(format_type), None)
-                            if func:
-                                myimage, myimageFormat, myinstallProfile = func(myimage, builder, myinstallProfile)
-                            else:
-                                printer.out("Builder type unknown: " + format_type, printer.ERROR)
-                                return
-                        else:
-                            printer.out("Builder type unknown: " + format_type, printer.ERROR)
-                            return
 
-                        myimage.format = myimageFormat
+                        func = getattr(generate_utils, "generate_"+generics_utils.remove_special_chars(targetFormat.format.name), None)
+                        if func:
+                            myimage, myinstallProfile = func(myimage, builder, myinstallProfile, self.api, self.login)
+                        else:
+                            printer.out("Builder type unknown: "+format_type, printer.ERROR)
+                            return 2
+
+                        myimage.targetFormat = targetFormat
                         myimage.installProfile = myinstallProfile
                         rImage = self.api.Users(self.login).Scannedinstances(myRScannedInstance.dbId).Scans(
                             myScan.dbId).Images().Generate(myimage)
