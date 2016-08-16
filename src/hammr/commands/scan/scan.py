@@ -327,12 +327,12 @@ class Scan(Cmd, CoreGlobal):
 
             printer.out("Import scan id [" + doArgs.id + "] ...")
             myScannedInstances = self.api.Users(self.login).Scannedinstances.Getall(Includescans="true")
-            if myScannedInstances is None or not hasattr(myScannedInstances, 'get_scannedInstance'):
+            if myScannedInstances is None or not hasattr(myScannedInstances, 'scannedInstances'):
                 printer.out("scan not found", printer.ERROR)
                 return
             else:
                 myScan = None
-                for myScannedInstance in myScannedInstances.get_scannedInstance():
+                for myScannedInstance in myScannedInstances.scannedInstances.scannedInstance:
                     for scan in myScannedInstance.scans.scan:
                         if str(scan.dbId) == doArgs.id:
                             myScan = scan
@@ -345,7 +345,7 @@ class Scan(Cmd, CoreGlobal):
                 myScanImport = scanImport()
                 myScanImport.applianceName = doArgs.name
                 myScanImport.applianceVersion = doArgs.version
-                myScanImport.orgUri = (self.api.Users(self.login).Orgs().Getall()).org[0].uri
+                myScanImport.orgUri = (self.api.Users(self.login).Orgs().Getall()).orgs.org[0].uri
                 rScanImport = self.api.Users(self.login).Scannedinstances(myRScannedInstance.dbId).Scans(
                     myScan.dbId).Imports().Import(myScanImport)
                 status = rScanImport.status
@@ -356,8 +356,12 @@ class Scan(Cmd, CoreGlobal):
                 while not (status.complete or status.error or status.cancelled):
                     statusWidget.status = status
                     progress.update(status.percentage)
+
+                    # print dir((self.api.Users(self.login).Scannedinstances(myRScannedInstance.dbId).Scans(
+                    #     myScan.dbId).Imports().Status.Get(I=rScanImport.uri)))
+
                     status = (self.api.Users(self.login).Scannedinstances(myRScannedInstance.dbId).Scans(
-                        myScan.dbId).Imports().Status().Get(I=rScanImport.uri)).status[0]
+                        myScan.dbId).Imports().Status.Get(I=rScanImport.uri)).statuses.status[0]
                     time.sleep(2)
                 statusWidget.status = status
                 progress.finish()
