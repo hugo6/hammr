@@ -15,18 +15,14 @@ This builder type is the default name provided by UForge AppCenter.
 
 The ISO builder provides information for building ISO images.
 
-The ISO builder section has the following definition:
+The ISO builder section has the following definition when using YAML. You can also use JSON.
 
 .. code-block:: javascript
 
-	{
-	  "builders": [
-	    {
-	      "type": "ISO",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: ISO
+
 
 Building a Machine Image
 ------------------------
@@ -40,14 +36,11 @@ For building an image, the valid keys are:
 Example
 -------
 
-The following example shows an ISO builder.
+The following example shows a YAML ISO builder. You can also use JSON.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "ISO"
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: ISO
+

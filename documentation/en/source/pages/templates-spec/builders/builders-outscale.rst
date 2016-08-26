@@ -15,18 +15,13 @@ This builder type is the default name provided by UForge AppCenter.
 
 .. note:: This builder type name can be changed by your UForge administrator. To get the available builder types, please refer to :ref:`command-line-format`
 
-The Outscale builder section has the following definition:
+The Outscale builder section has the following definition, when using YAML. You can also use JSON.
 
 .. code-block:: javascript
 
-	{
-	  "builders": [
-	    {
-	      "type": "Outscale",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Outscale
 
 Building a Machine Image
 ------------------------
@@ -77,85 +72,65 @@ The Outscale cloud account has the following valid keys:
 Example
 -------
 
-The following example shows an amazon builder with all the information to build and publish a machine image to Amazon EC2.
+The following example shows a YAML Outscale builder with all the information to build and publish a machine image to Outscale.
 
-.. code-block:: json
+.. note:: JSON can also be used.
 
-	{
-	  "builders": [
-	    {
-	      "type": "Outscale",
-	      "account": {
-	        "type": "Outscale",
-	        "name": "My Outscale Account",        
-	        "accessKey": "789456123ajdiewjd",
-	        "secretAccessKey": "ks30hPeH1xWqilJ04"
-	      },
-	      "installation": {
-	        "diskSize": 10240
-	      },
-	      "zone": "eu-west-2",
-	      "description": "centos-template"
-	    }
-	  ]
-	}
+.. code-block:: yaml
+
+	---
+	builders:
+	- type: Outscale
+	  account:
+	    type: Outscale
+	    name: My Outscale Account
+	    accessKey: 789456123ajdiewjd
+	    secretAccessKey: ks30hPeH1xWqilJ04
+	  installation:
+	    diskSize: 10240
+	  zone: eu-west-2
+	  description: centos-template
 
 Referencing the Cloud Account
 -----------------------------
 
-To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a json file ``outscale-account.json``.
+To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a YAML ``outscale-account.yaml`` or JSON file ``outscale-account.json``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "accounts": [
-	    {
-	      "type": "Outscale",
-	      "name": "My Outscale Account",        
-	      "accessKey": "789456123ajdiewjd",
-	      "secretAccessKey": "ks30hPeH1xWqilJ04"
-	    }
-	  ]
-	}
+	---
+	accounts:
+	- type: Outscale
+	  name: My Outscale Account
+	  accessKey: 789456123ajdiewjd
+	  secretAccessKey: ks30hPeH1xWqilJ04
 
 The builder section can either reference by using ``file`` or ``name``.
 
 Reference by file:
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Outscale",
-	      "account": {
-	        "file": "/home/joris/accounts/outscale-account.json"
-	      },
-	      "installation": {
-	        "diskSize": 10240
-	      },
-	      "region": "eu-west-2",
-	      "s3bucket": "centos-template"
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Outscale
+	  account:
+	    file: "/home/joris/accounts/outscale-account.yaml"
+	  installation:
+	    diskSize: 10240
+	  region: eu-west-2
+	  s3bucket: centos-template
 
 Reference by name, note the cloud account must already be created by using ``account create``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Outscale",
-	      "account": {
-	        "name": "My Outscale Account"
-	      },
-	      "installation": {
-	        "diskSize": 10240
-	      },
-	      "region": "eu-west-2",
-	      "s3bucket": "centos-template"
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Outscale
+	  account:
+	    name: My Outscale Account
+	  installation:
+	    diskSize: 10240
+	  region: eu-west-2
+	  s3bucket: centos-template

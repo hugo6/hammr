@@ -15,16 +15,11 @@ This builder type is the default name provided by UForge AppCenter.
 
 The Xen builder section has the following definition:
 
-.. code-block:: javascript
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Xen",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Xen
 
 Building a Machine Image
 ------------------------
@@ -40,17 +35,12 @@ For building an image, the valid keys are:
 Example
 -------
 
-The following example shows a Xen builder.
+The following example shows a YAML Xen builder. You can also use JSON.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Xen",
-	      "hardwareSettings": {
-	        "memory": 1024
-	      }
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Xen
+	  hardwareSettings:
+	    memory: 1024

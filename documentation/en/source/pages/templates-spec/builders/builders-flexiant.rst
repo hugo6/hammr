@@ -18,18 +18,14 @@ These builder types are the default names provided by UForge AppCenter.
 
 The Flexiant builder requires cloud account information to upload and register the machine image to the Flexiant platform.
 
-The Flexiant builder section has the following definition:
+The Flexiant builder section has the following definition when using YAML. You can also use JSON.
 
 .. code-block:: javascript
 
-	{
-	  "builders": [
-	    {
-	      "type": "Flexiant OVA - VMware",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+	---
+  builders:
+  - type: Flexiant RAW - KVM/Xen
+
 
 Building a Machine Image
 ------------------------
@@ -73,99 +69,77 @@ The Flexiant cloud account has the following valid keys:
 Example
 -------
 
-The following example shows a Flexiant builder with all the information to build and publish a machine image to the Flexiant.
+The following example shows a YAML Flexiant builder with all the information to build and publish a machine image to the Flexiant.
 
-.. code-block:: json
+.. note:: You can also use JSON.
 
-    {
-      "builders": [
-        {
-          "type": "Flexiant RAW - KVM/Xen",
-          "account": {
-            "type": "Flexiant",
-            "name": "My Flexiant account",
-            "apiUsername": "name@domain.com/mykey1111",
-            "password": "mypassword",
-            "wsdlUrl": "myWsdlurl"
-          },
-          "hardwareSettings": {
-            "memory": 1024
-          },
-          "installation": {
-            "diskSize": 2000
-          },
-          "virtualDatacenterName": "KVM (CEPH Cluster)",
-          "machineImageName": "test_hammr",
-          "diskOffering": "21 GB"
-        }
-      ]
-    }
+.. code-block:: yaml
+
+  ---
+  builders:
+  - type: Flexiant RAW - KVM/Xen
+    account:
+      type: Flexiant
+      name: My Flexiant account
+      apiUsername: name@domain.com/mykey1111
+      password: mypassword
+      wsdlUrl: myWsdlurl
+    hardwareSettings:
+      memory: 1024
+    installation:
+      diskSize: 2000
+    virtualDatacenterName: KVM (CEPH Cluster)
+    machineImageName: test_hammr
+    diskOffering: 21 GB
 
 Referencing the Cloud Account
 -----------------------------
 
-To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a json file ``Flexiant-account.json``.
+To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a YAML file ``Flexiant-account.yaml`` or JSON file ``Flexiant-account.json``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-    {
-      "accounts": [
-        {
-          "type": "Flexiant",
-          "name": "My Flexiant account",
-          "apiUsername": "name@domain.com/mykey1111",
-          "password": "mypassword",
-          "wsdlUrl": "myWsdlurl"
-        }
-      ]
-    }
+  ---
+  accounts:
+  - type: Flexiant
+    name: My Flexiant account
+    apiUsername: name@domain.com/mykey1111
+    password: mypassword
+    wsdlUrl: myWsdlurl
+
 
 The builder section can either reference by using ``file`` or ``name``.
 
 Reference by file:
 
-.. code-block:: json
+.. code-block:: yaml
 
-    {
-      "builders": [
-        {
-          "type": "Flexiant RAW - KVM/Xen",
-          "account": {
-            "file": "/path/to/flexiant-account.json"
-              },
-          "hardwareSettings": {
-            "memory": 1024
-          },
-          "installation": {
-            "diskSize": 2000
-          },
-          "virtualDatacenterName": "KVM (CEPH Cluster)",
-          "machineImageName": "test_hammr",
-          "diskOffering": "21 GB"
-        }
-      ]
-    }
+  ---
+  builders:
+  - type: Flexiant RAW - KVM/Xen
+    account:
+      file: "/path/to/flexiant-account.yaml"
+    hardwareSettings:
+      memory: 1024
+    installation:
+      diskSize: 2000
+    virtualDatacenterName: KVM (CEPH Cluster)
+    machineImageName: test_hammr
+    diskOffering: 21 GB
 
 Reference by name, note the cloud account must already be created by using ``account create``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-    {
-      "builders": [
-        {
-          "type": "Flexiant RAW - KVM/Xen",
-          "account": {
-            "name": "My Flexiant Account"
-              },
-          "hardwareSettings": {
-            "memory": 1024
-          },
-          "installation": {
-            "diskSize": 2000
-          },
-          "virtualDatacenterName": "KVM (CEPH Cluster)",
-          "machineImageName": "test_hammr",
-          "diskOffering": "21 GB"
-        }
-      ]
-    }
+  ---
+  builders:
+  - type: Flexiant RAW - KVM/Xen
+    account:
+      name: My Flexiant Account
+    hardwareSettings:
+      memory: 1024
+    installation:
+      diskSize: 2000
+    virtualDatacenterName: KVM (CEPH Cluster)
+    machineImageName: test_hammr
+    diskOffering: 21 GB

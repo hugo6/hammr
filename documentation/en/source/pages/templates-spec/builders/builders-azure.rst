@@ -16,18 +16,14 @@ This builder type is the default name provided by UForge AppCenter.
 
 .. note:: This builder type name can be changed by your UForge administrator. To get the available builder types, please refer to :ref:`command-line-format`
 
-The Azure builder section has the following definition:
+The Azure builder section has the following definition, when using YAML. You can also use JSON.
 
-.. code-block:: javascript
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Microsoft Azure",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+---
+  builders:
+  - type: Microsoft Azure
+
 
 Building a Machine Image
 ------------------------
@@ -77,74 +73,57 @@ The Azure cloud account has the following valid keys:
 Example
 -------
 
-The following example shows an Azure builder with all the information to build and publish a machine image to Azure.
+The following example shows a YAML Azure builder with all the information to build and publish a machine image to Azure.
 
-.. code-block:: json
+.. note:: You can also use JSON.
 
-  {
-    "builders": [
-      {
-        "type": "Microsoft Azure",
-        "account": {
-          "type": "Microsoft Azure",
-          "name": "My Azure account",
-          "publishsettings": "/path/to/Pay-As-You-Go-4-25-2016-credentials.publishsettings"
-        },
-        "storageAccount":"mystorageaccount",
-        "region":"Central US"
-      }
-    ]
-  }
+.. code-block:: yaml
+
+  ---
+  builders:
+  - type: Microsoft Azure
+    account:
+      type: Microsoft Azure
+      name: My Azure account
+      publishsettings: "/path/to/Pay-As-You-Go-4-25-2016-credentials.publishsettings"
+    storageAccount: mystorageaccount
+    region: Central US
 
 Referencing the Cloud Account
 -----------------------------
 
-To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a json file ``azure-account.json``.
+To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a YAML file ``azure-account.yaml`` or JSON file ``azure-account.json``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-  {
-    "accounts": [
-      {
-        "type": "Microsoft Azure",
-        "name": "My Azure account",
-        "publishsettings": "/path/to/Pay-As-You-Go-date-credentials.publishsettings"
-      }
-    ]
-  }
+  ---
+  accounts:
+  - type: Microsoft Azure
+    name: My Azure account
+    publishsettings: "/path/to/Pay-As-You-Go-date-credentials.publishsettings"
 
 The builder section can either reference by using ``file`` or ``name``.
 
 Reference by file:
 
-.. code-block:: json
+.. code-block:: yaml
 
-  {
-    "builders": [
-      {
-        "type": "Microsoft Azure",
-        "account": {
-              "file": "/home/joris/accounts/azure-account.json"
-        },
-        "storageAccount":"mystorageaccount",
-        "region":"Central US"
-      }
-    ]
-  }
+  ---
+  builders:
+  - type: Microsoft Azure
+    account:
+      file: "/home/joris/accounts/azure-account.yaml"
+    storageAccount: mystorageaccount
+    region: Central US
 
 Reference by name, note the cloud account must already be created by using ``account create``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-  {
-    "builders": [
-      {
-        "type": "Microsoft Azure",
-        "account": {
-              "name": "My Azure Account"
-        },
-        "storageAccount":"mystorageaccount",
-        "region":"Central US"
-      }
-    ]
-  }
+  ---
+  builders:
+  - type: Microsoft Azure
+    account:
+      name: My Azure Account
+    storageAccount: mystorageaccount
+    region: Central US

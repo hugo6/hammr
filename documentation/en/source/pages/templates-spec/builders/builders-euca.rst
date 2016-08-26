@@ -18,18 +18,13 @@ These builder types are the default names provided by UForge AppCenter.
 
 The Eucalyptus builder requires cloud account information to upload and register the machine image to an Eucalyptus cloud platform.
 
-The Eucalyptus builder section has the following definition:
+The Eucalyptus builder section has the following definition when using YAML. You can also use JSON.
 
 .. code-block:: javascript
 
-	{
-	  "builders": [
-	    {
-	      "type": "Eucalyptus KVM",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Eucalyptus KVM
 
 Building a Machine Image
 ------------------------
@@ -79,89 +74,72 @@ The Eucalyptus cloud account has the following valid keys:
 Example
 -------
 
-The following example shows an Eucalyptus builder with all the information to build and publish a machine image to Eucalyptus.
+The following example shows a YAML Eucalyptus builder with all the information to build and publish a machine image to Eucalyptus.
 
-.. code-block:: json
+.. note:: You can also use JSON.
 
-	{
-	  "builders": [
-	    {
-	      "type": "Eucalyptus KVM",
-	      "account": {
-	        "type": "Eucalyptus",
-	        "name": "My Eucalyptus Account",
-	        "accountNumber": "111122223333",
-	        "x509PrivateKey": "/home/joris/accounts/euca/euca-pk.pem",
-	        "x509Cert": "/home/joris/accounts/euca/euca-cert.pem",
-	        "cloudCert": "/home/joris/accounts/euca/cloud-cert.pem",
-	        "endpoint": "http://127.0.0.1/8773",
-	        "queryId": "WkVpyXXZ77rXcdeSbds3lkXcr5Jc4GeUtkA",
-	        "secretKey": "ir9CKRvOXXTHJXXj8VPRXX7PgxxY9DY0VLng"
-	      },
-	      "imageName": "CentOS Core",
-	      "description": "CentOS Base Image",
-	      "bucket": "ussprodbucket"
-	    }
-	  ]
-	}
+.. code-block:: yaml
+
+	---
+	builders:
+	- type: Eucalyptus KVM
+	  account:
+	    type: Eucalyptus
+	    name: My Eucalyptus Account
+	    accountNumber: '111122223333'
+	    x509PrivateKey: "/home/joris/accounts/euca/euca-pk.pem"
+	    x509Cert: "/home/joris/accounts/euca/euca-cert.pem"
+	    cloudCert: "/home/joris/accounts/euca/cloud-cert.pem"
+	    endpoint: http://127.0.0.1/8773
+	    queryId: WkVpyXXZ77rXcdeSbds3lkXcr5Jc4GeUtkA
+	    secretKey: ir9CKRvOXXTHJXXj8VPRXX7PgxxY9DY0VLng
+	  imageName: CentOS Core
+	  description: CentOS Base Image
+	  bucket: ussprodbucket
 
 Referencing the Cloud Account
 -----------------------------
 
 To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a json file ``euca-account.json``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "accounts": [
-	    {
-	      "type": "Eucalyptus",
-	      "name": "My Eucalyptus Account",
-	      "accountNumber": "111122223333",
-	      "x509PrivateKey": "/home/joris/accounts/euca/euca-pk.pem",
-	      "x509Cert": "/home/joris/accounts/euca/euca-cert.pem",
-	      "cloudCert": "/home/joris/accounts/euca/cloud-cert.pem",
-	      "endpoint": "http://127.0.0.1/8773",
-	      "queryId": "WkVpyXXZ77rXcdeSbds3lkXcr5Jc4GeUtkA",
-	      "secretKey": "ir9CKRvOXXTHJXXj8VPRXX7PgxxY9DY0VLng"
-	    }
-	  ]
-	}
+	---
+	accounts:
+	- type: Eucalyptus
+	  name: My Eucalyptus Account
+	  accountNumber: '111122223333'
+	  x509PrivateKey: "/home/joris/accounts/euca/euca-pk.pem"
+	  x509Cert: "/home/joris/accounts/euca/euca-cert.pem"
+	  cloudCert: "/home/joris/accounts/euca/cloud-cert.pem"
+	  endpoint: http://127.0.0.1/8773
+	  queryId: WkVpyXXZ77rXcdeSbds3lkXcr5Jc4GeUtkA
+	  secretKey: ir9CKRvOXXTHJXXj8VPRXX7PgxxY9DY0VLng
 
 The builder section can either reference by using ``file`` or ``name``.
 
 Reference by file:
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Eucalyptus KVM",
-	      "account": {
-	        "file": "/home/joris/accounts/euca-account.json"
-	      },
-	      "imageName": "CentOS Core",
-	      "description": "CentOS Base Image",
-	      "bucket": "ussprodbucket"
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Eucalyptus KVM
+	  account:
+	    file: "/home/joris/accounts/euca-account.yaml"
+	  imageName: CentOS Core
+	  description: CentOS Base Image
+	  bucket: ussprodbucket
 
 Reference by name, note the cloud account must already be created by using ``account create``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Eucalyptus KVM",
-	      "account": {
-	        "name": "My Eucalytpus Account"
-	      },
-	      "imageName": "CentOS Core",
-	      "description": "CentOS Base Image",
-	      "bucket": "ussprodbucket"
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Eucalyptus KVM
+	  account:
+	    name: My Eucalytpus Account
+	  imageName: CentOS Core
+	  description: CentOS Base Image
+	  bucket: ussprodbucket

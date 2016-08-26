@@ -16,18 +16,16 @@ This builder type is the default name provided by UForge AppCenter.
 
 .. note:: This builder type name can be changed by your UForge administrator. To get the available builder types, please refer to :ref:`command-line-format`
 
-The Abiquo builder section has the following definition:
+The Abiquo builder section has the following definition, when using YAML. JSON can also be used:
 
-.. code-block:: javascript
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Abiquo",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Abiquo
+	  account:
+	    type: Abiquo
+
 
 Building a Machine Image
 ------------------------
@@ -78,105 +76,82 @@ Examples
 Basic Example
 ~~~~~~~~~~~~~
 
-The following example shows an abiquo builder with all the information to build and publish a machine image to the Abiquo Cloud platform.
+The following YAML example shows an Abiquo builder with all the information to build and publish a machine image to the Abiquo Cloud platform.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Abiquo",
-	      "account": {
-	        "type": "Abiquo",
-	        "name": "My Abiquo Account",
-	        "hostname": "test.abiquo.com",
-	        "username": "myLogin",
-	        "password": "myPassWD"
-	      },
-	      "hardwareSettings": {
-	        "memory": 1024
-	      },
-	      "installation": {
-	        "diskSize": 2000
-	      },
-	      "enterprise": "UShareSoft",
-	      "datacenter": "London",
-	      "productName": "CentOS Core",
-	      "category": "OS",
-	      "description": "CentOS Core template."
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Abiquo
+	  account:
+	    type: Abiquo
+	    name: My Abiquo Account
+	    hostname: test.abiquo.com
+	    username: myLogin
+	    password: myPassWD
+	  hardwareSettings:
+	    memory: 1024
+	  installation:
+	    diskSize: 2000
+	  enterprise: UShareSoft
+	  datacenter: London
+	  productName: CentOS Core
+	  category: OS
+	  description: CentOS Core template.
 
 Referencing the Cloud Account
 -----------------------------
 
-To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a json file ``abiquo-account.json``.
+To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a YAML file ``abiquo-account.yaml``.
 
-.. code-block:: json
+.. note::  JSON can also be used.
 
-	{
-	  "accounts": [
-	    {
-	      "type": "Abiquo",
-	      "name": "My Abiquo Account"
-	      "hostname": "test.abiquo.com",
-	      "username": "myLogin",
-	      "password": "myPassWD"
-	    }
-	  ]
-	}
+.. code-block:: yaml
+
+	account:
+	    type: Abiquo
+	    name: My Abiquo Account
+	    hostname: test.abiquo.com
+	    username: myLogin
+	    password: myPassWD
 
 The builder section can either reference by using ``file`` or ``name``.
 
 Reference by file:
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Abiquo",
-	      "account": {
-	        "file": "/home/joris/accounts/abiquo-account.json"
-	      },
-	      "hardwareSettings": {
-	        "memory": 1024
-	      },
-	      "installation": {
-	        "diskSize": 2000
-	      },
-	      "enterprise": "UShareSoft",
-	      "datacenter": "London",
-	      "productName": "CentOS Core",
-	      "category": "OS",
-	      "description": "CentOS Core template."
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Abiquo
+	  account:
+	    file: "/home/joris/accounts/abiquo-account.yaml"
+	  hardwareSettings:
+	    memory: 1024
+	  installation:
+	    diskSize: 2000
+	  enterprise: UShareSoft
+	  datacenter: London
+	  productName: CentOS Core
+	  category: OS
+	  description: CentOS Core template.
+
 
 Reference by name, note the cloud account must already be created by using ``account create``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Abiquo",
-	      "account": {
-	        "name": "My Abiquo Account"
-	      },
-	      "hardwareSettings": {
-	        "memory": 1024
-	      },
-	      "installation": {
-	        "diskSize": 2000
-	      },
-	      "enterprise": "UShareSoft",
-	      "datacenter": "London",
-	      "productName": "CentOS Core",
-	      "category": "OS",
-	      "description": "CentOS Core template."
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Abiquo
+	  account:
+	    name: My Abiquo Account
+	  hardwareSettings:
+	    memory: 1024
+	  installation:
+	    diskSize: 2000
+	  enterprise: UShareSoft
+	  datacenter: London
+	  productName: CentOS Core
+	  category: OS
+	  description: CentOS Core template.
