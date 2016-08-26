@@ -15,16 +15,11 @@ This builder type is the default name provided by UForge AppCenter.
 
 The VMware Workstation builder section has the following definition:
 
-.. code-block:: javascript
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "VMware Server",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: VMware Server
 
 The VMware Workstation builder has the following valid keys:
 
@@ -38,18 +33,13 @@ The VMware Workstation builder has the following valid keys:
 Example
 -------
 
-The following example shows an VMware Workstation builder.
+The following example shows a YAML VMware Workstation builder. You can also use JSON.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "VMware Server",
-	      "hardwareSettings": {
-	        "memory": 1024,
-	        "hwType": 7
-	      }
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: VMware Server
+	  hardwareSettings:
+	    memory: 1024
+	    hwType: 7

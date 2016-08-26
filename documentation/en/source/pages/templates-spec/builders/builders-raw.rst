@@ -17,14 +17,9 @@ The Raw builder section has the following definition:
 
 .. code-block:: javascript
 
-	{
-	  "builders": [
-	    {
-	      "type": "Raw Virtual Disk",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Raw Virtual Disk
 
 Building a Machine Image
 ------------------------
@@ -38,17 +33,12 @@ For building an image, the valid keys are:
 Example
 -------
 
-The following example shows a Raw builder.
+The following YAML example shows a Raw builder. You can also use JSON.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Raw Virtual Disk",
-	      "hardwareSettings": {
-	        "memory": 1024
-	      }
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Raw Virtual Disk
+	  hardwareSettings:
+	    memory: 1024

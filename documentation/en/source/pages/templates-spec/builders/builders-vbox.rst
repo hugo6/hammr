@@ -18,16 +18,11 @@ This builder type is the default name provided by UForge AppCenter.
 
 The VirtualBox builder section has the following definition:
 
-.. code-block:: javascript
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "VirtualBox",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: VirtualBox
 
 Building a Machine Image
 ------------------------
@@ -43,17 +38,12 @@ For building an image, the valid keys are:
 Example
 -------
 
-The following example shows a VirtualBox builder.
+The following example shows a YAML VirtualBox builder. You can also use JSON.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "VirtualBox",
-	      "hardwareSettings": {
-	        "memory": 1024
-	      }
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: VirtualBox
+	  hardwareSettings:
+	    memory: 1024

@@ -16,18 +16,13 @@ This builder type is the default name provided by UForge AppCenter.
 
 .. note:: This builder type name can be changed by your UForge administrator. To get the available builder types, please refer to :ref:`command-line-format`
 
-The Amazon builder section has the following definition:
+The Amazon builder section has the following definition, when using YAML. JSON can also be used.
 
-.. code-block:: javascript
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Amazon AWS",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+	---
+  builders:
+  - type: Amazon AWS
 
 Building a Machine Image
 ------------------------
@@ -85,90 +80,71 @@ Note: In the case where ``name`` or ``file`` is used to reference a cloud accoun
 Example
 -------
 
-The following example shows an amazon builder with all the information to build and publish a machine image to Amazon EC2.
+The following example shows a YAML Amazon builder with all the information to build and publish a machine image to Amazon EC2.
 
-.. code-block:: json
+.. note:: JSON can also be used.
 
-  {
-    "builders": [
-      {
-        "type": "Amazon AWS",
-        "account": {
-          "type": "Amazon",
-          "name": "My AWS account",
-          "accountNumber": "11111-111111-1111",
-          "accessKeyId": "myaccessKeyid",
-          "secretAccessKeyId": "mysecretaccesskeyid",
-          "x509Cert": "/path/to/aws.cert.pem",
-          "x509PrivateKey": "/path/to/aws.key.pem"
-        },
-        "installation": {
-          "diskSize": 10240
-        },
-        "region": "eu-central-1",
-        "bucket": "testsohammr"
-      }
-    ]
-  }
+.. code-block:: yaml
+
+  ---
+  builders:
+  - type: Amazon AWS
+    account:
+      type: Amazon
+      name: My AWS account
+      accountNumber: 11111-111111-1111
+      accessKeyId: myaccessKeyid
+      secretAccessKeyId: mysecretaccesskeyid
+      x509Cert: "/path/to/aws.cert.pem"
+      x509PrivateKey: "/path/to/aws.key.pem"
+    installation:
+      diskSize: 10240
+    region: eu-central-1
+    bucket: testsohammr
 
 Referencing the Cloud Account
 
 To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a json file ``aws-account.json``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-  {
-    "accounts": [
-      {
-        "type": "Amazon",
-        "accountNumber": "11111-111111-1111",
-        "name": "My AWS account",
-        "accessKeyId": "myaccessKeyid",
-        "secretAccessKeyId": "mysecretaccesskeyid",
-        "x509Cert": "/path/to/aws.cert.pem",
-        "x509PrivateKey": "/path/to/aws.key.pem"
-      }
-    ]
-  }
+  ---
+  accounts:
+  - type: Amazon
+    accountNumber: 11111-111111-1111
+    name: My AWS account
+    accessKeyId: myaccessKeyid
+    secretAccessKeyId: mysecretaccesskeyid
+    x509Cert: "/path/to/aws.cert.pem"
+    x509PrivateKey: "/path/to/aws.key.pem"
+
 
 The builder section can either reference by using ``file`` or ``name``.
 
 Reference by file:
 
-.. code-block:: json
+.. code-block:: yaml
 
-  {
-    "builders": [
-      {
-        "type": "Amazon AWS",
-        "account": {
-              "file": "/path/to/aws-account.json"
-        },
-        "installation": {
-          "diskSize": 10240
-        },
-        "region": "eu-central-1",
-        "bucket": "test-so-hammr"
-      }
-    ]
-  }
+  ---
+  builders:
+  - type: Amazon AWS
+    account:
+      file: "/path/to/aws-account.yaml"
+    installation:
+      diskSize: 10240
+    region: eu-central-1
+    bucket: test-so-hammr
 
 Reference by name, note the cloud account must already be created by using ``account create``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-  {
-    "builders": [
-      {
-        "type": "Amazon AWS",
-        "account": {
-              "name": "My AWS Account"
-        },
-        "installation": {
-          "diskSize": 10240
-        },
-        "region": "eu-central-1",
-        "bucket": "test-so-hammr"
-      }
-    ]
-  }
+  ---
+  builders:
+  - type: Amazon AWS
+    account:
+      name: My AWS Account
+    installation:
+      diskSize: 10240
+    region: eu-central-1
+    bucket: test-so-hammr

@@ -15,16 +15,11 @@ This builder type is the default name provided by UForge AppCenter.
 
 The VMware vCenter builder section has the following definition:
 
-.. code-block:: javascript
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "VMware vCenter",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+  ---
+  builders:
+  - type: VMware vCenter
 
 Building a Machine Image
 ------------------------
@@ -68,119 +63,97 @@ The vCenter cloud account has the following valid keys:
 * ``port`` (optional): an integer providing the VMware vSphere vCenter platform port number (by default: 443 is used).
 * ``proxyPort`` (optional): an integer providing the proxy port number to use to reach the VMware vSphere vCenter platform.
 
-..note:: In the case where ``name`` or ``file`` is used to reference a cloud account, all the other keys are no longer required in the account definition for the builder.
+.. note:: In the case where ``name`` or ``file`` is used to reference a cloud account, all the other keys are no longer required in the account definition for the builder.
 
 Example
 -------
 
-The following example shows an vCenter builder with all the information to build and publish a machine image to VMware vSphere vCenter.
+The following example shows a YAML vCenter builder with all the information to build and publish a machine image to VMware vSphere vCenter.
 
-.. code-block:: json
+.. note:: You can also use JSON.
 
-  {
-    "builders": [
-      {
-        "type": "VMware vCenter",
-        "account": {
-          "type": "VMware vCenter",
-          "name": "My VCenter account",
-          "login": "mylogin",
-          "password": "mypassword",
-          "hostname": "myhostname",
-          "proxyHostname": "myproxyHostname",
-          "proxyPort": "6354",
-          "port": "443"
-        },
-        "hardwareSettings": {
-          "memory": 1024,
-          "hwType": 7
-        },
-        "installation": {
-          "diskSize": 10240
-        },
-        "clusterName": "cluster",
-        "datacenterName": "datacentername",
-        "datastore": "esx2esx_datastore",
-        "displayName": "test_Hammr",
-        "network": "VM_Network"
-      }
-    ]
-  }
+.. code-block:: yaml
+
+  ---
+  builders:
+  - type: VMware vCenter
+    account:
+      type: VMware vCenter
+      name: My VCenter account
+      login: mylogin
+      password: mypassword
+      hostname: myhostname
+      proxyHostname: myproxyHostname
+      proxyPort: '6354'
+      port: '443'
+    hardwareSettings:
+      memory: 1024
+      hwType: 7
+    installation:
+      diskSize: 10240
+    clusterName: cluster
+    datacenterName: datacentername
+    datastore: esx2esx_datastore
+    displayName: test_Hammr
+    network: VM_Network
+
 
 Referencing the Cloud Account
 -----------------------------
 
-To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a json file ``vcenter-account.json``.
+To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a yaml file ``vcenter-account.yaml`` or json file ``vcenter-account.json``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-  {
-    "accounts": [
-      {
-        "type": "VMware vCenter",
-        "name": "My VCenter account",
-        "login": "mylogin",
-        "password": "mypassword",
-        "hostname": "myhostname",
-        "proxyHostname": "myproxyHostname",
-        "proxyPort": "6354",
-        "port": "443"
-      }
-    ]
-  }
+  ---
+  accounts:
+  - type: VMware vCenter
+    name: My VCenter account
+    login: mylogin
+    password: mypassword
+    hostname: myhostname
+    proxyHostname: myproxyHostname
+    proxyPort: '6354'
+    port: '443'
 
 The builder section can either reference by using ``file`` or ``name``.
 
 Reference by file:
 
-.. code-block:: json
+.. code-block:: yaml
 
-  {
-    "builders": [
-      {
-        "type": "VMware vCenter",
-        "account": {
-          "file": "/home/joris/accounts/vcenter-account.json"
-        },
-        "hardwareSettings": {
-          "memory": 1024,
-          "hwType": 7
-        },
-        "installation": {
-          "diskSize": 10240
-        },
-        "clusterName": "cluster",
-        "datacenterName": "datacentername",
-        "datastore": "esx2esx_datastore",
-        "displayName": "test_Hammr",
-        "network": "VM_Network"
-      }
-    ]
-  }
+  ---
+  builders:
+  - type: VMware vCenter
+    account:
+      file: "/home/joris/accounts/vcenter-account.yaml"
+    hardwareSettings:
+      memory: 1024
+      hwType: 7
+    installation:
+      diskSize: 10240
+    clusterName: cluster
+    datacenterName: datacentername
+    datastore: esx2esx_datastore
+    displayName: test_Hammr
+    network: VM_Network
 
 Reference by name, note the cloud account must already be created by using ``account create``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-  {
-    "builders": [
-      {
-        "type": "VMware vCenter",
-        "account": {
-          "name": "My vCenter Account"
-        },
-        "hardwareSettings": {
-          "memory": 1024,
-          "hwType": 7
-        },
-        "installation": {
-          "diskSize": 10240
-        },
-        "clusterName": "cluster",
-        "datacenterName": "datacentername",
-        "datastore": "esx2esx_datastore",
-        "displayName": "test_Hammr",
-        "network": "VM_Network"
-      }
-    ]
-  }
+  ---
+  builders:
+  - type: VMware vCenter
+    account:
+      name: My vCenter Account
+    hardwareSettings:
+      memory: 1024
+      hwType: 7
+    installation:
+      diskSize: 10240
+    clusterName: cluster
+    datacenterName: datacentername
+    datastore: esx2esx_datastore
+    displayName: test_Hammr
+    network: VM_Network

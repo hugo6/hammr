@@ -14,18 +14,13 @@ These builder types are the default names provided by UForge AppCenter.
 .. note:: These builder type names can be changed by your UForge administrator. To get the available builder types, please refer to :ref:`command-line-format`
 
 The Nimbula builder requires cloud account information to upload and register the machine image to the Nimbula platform.
-The Nimbula builder section has the following definition:
+The Nimbula builder section has the following definition when using YAML. You can also use JSON.
 
 .. code-block:: javascript
 
-	{
-	  "builders": [
-	    {
-	      "type": "Nimbula KVM",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Nimbula KVM
 
 Building a Machine Image
 ------------------------
@@ -34,9 +29,9 @@ For building an image, the valid keys are:
 
 * ``type`` (mandatory): a string providing the machine image type to build. Default builder type for Nimbula: ``Nimbula ESX` or, ``Nimbula KVMK``. To get the available builder type, please refer to :ref:`command-line-format`
 * ``hardwareSettings`` (mandatory): an object providing hardware settings to be used for the machine image. If an OVF machine image is being built, then the hardware settings are mandatory. The following valid keys for hardware settings are:
-	* ``memory`` (mandatory): an integer providing the amount of RAM to provide to an instance provisioned from the machine image (in MB).
+* ``memory`` (mandatory): an integer providing the amount of RAM to provide to an instance provisioned from the machine image (in MB).
 * ``installation`` (optional): an object providing low-level installation or first boot options. These override any installation options in the :ref:`template-stack` section. The following valid keys for installation are:
-	* ``diskSize`` (mandatory): an integer providing the disk size of the machine image to create. Note, this overrides any disk size information in the stack. This cannot be used if an advanced partitioning table is defined in the stack.
+* ``diskSize`` (mandatory): an integer providing the disk size of the machine image to create. Note, this overrides any disk size information in the stack. This cannot be used if an advanced partitioning table is defined in the stack.
 
 Publishing a Machine Image
 --------------------------
@@ -69,99 +64,76 @@ The Nimbula cloud account has the following valid keys:
 Example
 -------
 
-The following example shows an Nimbula builder with all the information to build and publish a machine image to Nimbula.
+The following example shows a YAML Nimbula builder with all the information to build and publish a machine image to Nimbula.
 
-.. code-block:: json
+.. note:: You can also use JSON.
 
-	{
-	  "builders": [
-	    {
-	      "type": "Nimbula KVM",
-	      "account": {
-	        "type": "Nimbula",
-	        "name": "My Nimbula Account",
-	        "endpoint": "http://20.20.20.201",
-	        "username": "myLogin",
-	        "password": "myPassWD"
-	      },
-	      "hardwareSettings": {
-	        "memory": 1024
-	      },
-	      "installation": {
-	        "diskSize": 2000
-	      },
-	      "imageListName": "/usharesoft/administrator/myimages",
-	      "imageVersion": "1",
-	      "description": "CentOS Core Image"
-	    }
-	  ]
-	}
+.. code-block:: yaml
+
+	---
+	builders:
+	- type: Nimbula KVM
+	  account:
+	    type: Nimbula
+	    name: My Nimbula Account
+	    endpoint: http://20.20.20.201
+	    username: myLogin
+	    password: myPassWD
+	  hardwareSettings:
+	    memory: 1024
+	  installation:
+	    diskSize: 2000
+	  imageListName: "/usharesoft/administrator/myimages"
+	  imageVersion: '1'
+	  description: CentOS Core Image
 
 Referencing the Cloud Account
 -----------------------------
 
-To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a json file ``nimbula-account.json``.
+To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a yaml file ``nimbula-account.yaml`` or json file ``nimbula-account.json``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "accounts": [
-	    {
-	        "type": "Nimbula",
-	        "name": "My Nimbula Account",
-	        "endpoint": "http://20.20.20.201",
-	        "username": "myLogin",
-	        "password": "myPassWD"
-	    }
-	  ]
-	}
+	---
+	accounts:
+	- type: Nimbula
+	  name: My Nimbula Account
+	  endpoint: http://20.20.20.201
+	  username: myLogin
+	  password: myPassWD
 
 The builder section can either reference by using ``file`` or ``name``.
 
 Reference by file:
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Nimbula KVM",
-	      "account": {
-	        "file": "/home/joris/accounts/nimbula-account.json"
-	      },
-	      "hardwareSettings": {
-	        "memory": 1024
-	      },
-	      "installation": {
-	        "diskSize": 2000
-	      },
-	      "imageListName": "/usharesoft/administrator/myimages",
-	      "imageVersion": "1",
-	      "description": "CentOS Core Image"
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Nimbula KVM
+	  account:
+	    file: "/home/joris/accounts/nimbula-account.yaml"
+	  hardwareSettings:
+	    memory: 1024
+	  installation:
+	    diskSize: 2000
+	  imageListName: "/usharesoft/administrator/myimages"
+	  imageVersion: '1'
+	  description: CentOS Core Image
 
 Reference by name, note the cloud account must already be created by using ``account create``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Nimbula KVM",
-	      "account": {
-	        "name": "My Nimbula Account"
-	      },
-	      "hardwareSettings": {
-	        "memory": 1024
-	      },
-	      "installation": {
-	        "diskSize": 2000
-	      },
-	      "imageListName": "/usharesoft/administrator/myimages",
-	      "imageVersion": "1",
-	      "description": "CentOS Core Image"
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Nimbula KVM
+	  account:
+	    name: My Nimbula Account
+	  hardwareSettings:
+	    memory: 1024
+	  installation:
+	    diskSize: 2000
+	  imageListName: "/usharesoft/administrator/myimages"
+	  imageVersion: '1'
+	  description: CentOS Core Image

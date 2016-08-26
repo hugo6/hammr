@@ -18,18 +18,13 @@ These builder types are the default names provided by UForge AppCenter.
 
 The OpenStack builder requires cloud account information to upload and register the machine image to the OpenStack platform.
 
-The OpenStack builder section has the following definition:
+The OpenStack builder section has the following definition when using YAML. You can also use JSON.
 
 .. code-block:: javascript
 
-	{
-	  "builders": [
-	    {
-	      "type": "OpenStack QCOW2",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+  ---
+    builders:
+    - type: OpenStack QCOW2
 
 Building a Machine Image
 ------------------------
@@ -84,49 +79,42 @@ Valid Keystone Versions
 Example
 -------
 
-The following example shows an OpenStack builder with all the information to build and publish a machine image to OpenStack.
+The following example shows a YAML OpenStack builder with all the information to build and publish a machine image to OpenStack.
 
-.. code-block:: json
+.. note:: You can also use JSON.
 
-  {
-    "builders": [
-      {
-        "type": "OpenStack QCOW2",
-        "account": {
-          "type": "OpenStack",
-          "name": "My OpenStack Account",
-          "glanceUrl": "http://myglanceurl/v1/",
-          "keystoneUrl": "http://mykeystoneurl:9292/v1",
-          "keystoneVersion": "http://mykeystoneversion:5000/v2.0",
-          "login": "mylogin",
-          "password": "mypassword"
-        },
-        "displayName": "OpenStack_testHammr",
-        "tenantName": "mytenant"
-      }
-    ]
-  }
+.. code-block:: yaml
+
+  ---
+  builders:
+  - type: OpenStack QCOW2
+    account:
+      type: OpenStack
+      name: My OpenStack Account
+      glanceUrl: http://myglanceurl/v1/
+      keystoneUrl: http://mykeystoneurl:9292/v1
+      keystoneVersion: http://mykeystoneversion:5000/v2.0
+      login: mylogin
+      password: mypassword
+    displayName: OpenStack_testHammr
+    tenantName: mytenant
 
 Referencing the Cloud Account
 -----------------------------
 
-To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a json file ``openstack-account.json``.
+To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a yaml file ``openstack-account.yaml`` or json file ``openstack-account.json``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-  {
-    "accounts": [
-      {
-        "type": "OpenStack",
-        "name": "My OpenStack Account",
-        "glanceUrl": "http://myglanceurl/v1/",
-        "keystoneUrl": "http://mykeystoneurl:9292/v1",
-        "keystoneVersion": "http://mykeystoneversion:5000/v2.0",
-        "login": "mylogin",
-        "password": "mypassword"
-      }
-    ]
-  }
+---
+accounts:
+- type: OpenStack
+  name: My OpenStack Account
+  glanceUrl: http://myglanceurl/v1/
+  keystoneUrl: http://mykeystoneurl:9292/v1
+  keystoneVersion: http://mykeystoneversion:5000/v2.0
+  login: mylogin
+  password: mypassword
 
 
 
@@ -134,34 +122,25 @@ The builder section can either reference by using ``file`` or ``name``.
 
 Reference by file:
 
-.. code-block:: json
+.. code-block:: yaml
 
-  {
-    "builders": [
-      {
-        "type": "OpenStack QCOW2",
-        "account": {
-              "file": "/path/to/openstack-account.json"
-        },
-        "displayName": "OpenStack_testHammr",
-        "tenantName": "mytenant"
-      }
-    ]
-  }
+  ---
+  builders:
+  - type: OpenStack QCOW2
+    account:
+      file: "/path/to/openstack-account.yaml"
+    displayName: OpenStack_testHammr
+    tenantName: mytenant
+
 
 Reference by name, note the cloud account must already be created by using ``account create``.
 
-.. code-block:: json
+.. code-block:: yaml
 
-  {
-    "builders": [
-      {
-        "type": "OpenStack QCOW2",
-        "account": {
-          "name": "My OpenStack Account"
-          },
-        "displayName": "OpenStack_testHammr",
-        "tenantName": "mytenant"
-      }
-    ]
-  }
+  ---
+  builders:
+  - type: OpenStack QCOW2
+    account:
+      name: My OpenStack Account
+    displayName: OpenStack_testHammr
+    tenantName: mytenant

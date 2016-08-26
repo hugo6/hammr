@@ -15,16 +15,11 @@ This builder type is the default name provided by UForge AppCenter.
 
 The VHD builder section has the following definition:
 
-.. code-block:: javascript
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "VHD",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+---
+	builders:
+	- type: VHD
 
 Building a Machine Image
 ------------------------
@@ -40,17 +35,13 @@ For building an image, the valid keys are:
 Example
 -------
 
-The following example shows a VHD builder.
+The following example shows a YAML VHD builder. You can also use JSON.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "VHD",
-	      "hardwareSettings": {
-	        "memory": 1024
-	      }
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: VHD
+	  hardwareSettings:
+	    memory: 1024
+

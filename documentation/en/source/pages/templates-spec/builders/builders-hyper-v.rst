@@ -13,18 +13,14 @@ This builder type is the default name provided by UForge AppCenter.
 .. note:: This builder type name can be changed by your UForge administrator. To get the available builder types, please refer to :ref:`command-line-format`
 
 The Hyper-V builder provides information for building Hyper-V compatible machine images.
-The Hyper-V builder section has the following definition:
+The Hyper-V builder section has the following definition when using YAML. You can also use JSON.
 
 .. code-block:: javascript
 
-	{
-	  "builders": [
-	    {
-	      "type": "Hyper-V",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+---
+builders:
+- type: Hyper-V
+
 
 Building a Machine Image
 ------------------------
@@ -40,17 +36,12 @@ For building an image, the valid keys are:
 Example
 -------
 
-The following example shows a Hyper-V builder.
+The following example shows a YAML Hyper-V builder. You can also use JSON.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "Hyper-V",
-	      "hardwareSettings": {
-	        "memory": 1024
-	      }
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: Hyper-V
+	  hardwareSettings:
+	    memory: 1024

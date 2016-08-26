@@ -13,18 +13,13 @@ This builder type is the default name provided by UForge AppCenter.
 
 .. note:: This builder type name can be changed by your UForge administrator. To get the available builder types, please refer to :ref:`command-line-format`
 
-The OVF builder section has the following definition:
+The OVF builder section has the following definition when using YAML. You can also use JSON.
 
 .. code-block:: javascript
 
-	{
-	  "builders": [
-	    {
-	      "type": "OVF or OVA",
-	      ...the rest of the definition goes here.
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: OVF or OVA
 
 The OVF builder has the following valid keys:
 
@@ -40,16 +35,11 @@ Example
 
 The following example shows an OVF builder.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "builders": [
-	    {
-	      "type": "OVF or OVA",
-	      "hardwareSettings": {
-	        "memory": 1024,
-	        "hwType": 7
-	      }
-	    }
-	  ]
-	}
+	---
+	builders:
+	- type: OVF or OVA
+	  hardwareSettings:
+	    memory: 1024
+	    hwType: 7
