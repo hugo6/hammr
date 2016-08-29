@@ -18,7 +18,7 @@ import tarfile
 import os.path
 import ntpath
 import shutil
-import json
+import yaml
 from junit_xml import TestSuite, TestCase
 
 from texttable import Texttable
@@ -84,7 +84,7 @@ class Template(Cmd, CoreGlobal):
         doParser.print_help()
 
     def arg_export(self):
-        doParser = ArgumentParser(prog=self.cmd_name+" export", add_help = True, description="Exports a template by creating an archive (compressed tar file) that includes the json template configuration file")
+        doParser = ArgumentParser(prog=self.cmd_name+" export", add_help = True, description="Exports a template by creating an archive (compressed tar file) that includes the template configuration file")
         mandatory = doParser.add_argument_group("mandatory arguments")
         mandatory.add_argument('--id', dest='id', required=True, help="the ID of the template to export")
         optional = doParser.add_argument_group("optional arguments")
@@ -185,7 +185,7 @@ class Template(Cmd, CoreGlobal):
     def arg_validate(self):
         doParser = ArgumentParser(prog=self.cmd_name+" validate", add_help = True, description="Validates the syntax of a template configuration file")
         mandatory = doParser.add_argument_group("mandatory arguments")
-        mandatory.add_argument('--file', dest='file', required=True, help="the json template configuration file")
+        mandatory.add_argument('--file', dest='file', required=True, help="the yaml/json template configuration file")
         return doParser
 
     def do_validate(self, args):
@@ -201,7 +201,7 @@ class Template(Cmd, CoreGlobal):
             file = generics_utils.get_file(doArgs.file)
             if file is None:
                 return 2
-            template=validate_json_file(file)
+            template=check_extension_and_load_data(file)
             if template is None:
                 return 2
             return 0
@@ -217,7 +217,7 @@ class Template(Cmd, CoreGlobal):
     def arg_create(self):
         doParser = ArgumentParser(prog=self.cmd_name+" create", add_help = True, description="Create a new template and save to the UForge server")
         mandatory = doParser.add_argument_group("mandatory arguments")
-        mandatory.add_argument('--file', dest='file', required=True, help="json file containing the template content")
+        mandatory.add_argument('--file', dest='file', required=True, help="yaml/json file containing the template content")
         optional = doParser.add_argument_group("optional arguments")
         optional.add_argument('--archive-path', dest='archive_path', required=False, help="path of where to store the archive of the created template. If provided hammr, creates an archive of the created template, equivalent to running template export")
         optional.add_argument('-f', '--force', dest='force', action='store_true', help='force template creation (delete template/bundle if already exist)', required = False)
@@ -238,11 +238,12 @@ class Template(Cmd, CoreGlobal):
                     return 2
 
             #--
-            #get json file (remote or local)
+            #get file (remote or local)
             file = generics_utils.get_file(doArgs.file)
             if file is None:
                 return 2
-            template=validate_json_file(file)
+            #validate parsing and mandatory fields
+            template = check_extension_and_validate(file)
             if template is None:
                 return 2
             if "builders" in template:
@@ -293,11 +294,11 @@ class Template(Cmd, CoreGlobal):
                 #delete tmp dir
                 shutil.rmtree(constants.TMP_WORKING_DIR)
             os.mkdir(constants.TMP_WORKING_DIR)
-            file = open(constants.TMP_WORKING_DIR + os.sep + constants.TEMPLATE_JSON_NEW_FILE_NAME, "w")
-            json.dump(template, file, indent=4, separators=(',', ': '))
-            file.close()
-            archive_files.append([constants.TEMPLATE_JSON_FILE_NAME, constants.TMP_WORKING_DIR+ os.sep +constants.TEMPLATE_JSON_NEW_FILE_NAME])
 
+            file = open(constants.TMP_WORKING_DIR + os.sep + constants.TEMPLATE_YAML_NEW_FILE_NAME, "w")
+            yaml.safe_dump(template, file, default_flow_style=False, indent=2, explicit_start='---')
+            file.close()
+            archive_files.append([constants.TEMPLATE_YAML_FILE_NAME, constants.TMP_WORKING_DIR+ os.sep +constants.TEMPLATE_YAML_NEW_FILE_NAME])
 
             if doArgs.archive_path is not None:
                 tar_path = doArgs.archive_path
@@ -338,7 +339,7 @@ class Template(Cmd, CoreGlobal):
     def arg_build(self):
         doParser = ArgumentParser(prog=self.cmd_name+" build", add_help = True, description="Builds a machine image from the template")
         mandatory = doParser.add_argument_group("mandatory arguments")
-        mandatory.add_argument('--file', dest='file', required=True, help="json file providing the builder parameters")
+        mandatory.add_argument('--file', dest='file', required=True, help="yaml/json file providing the builder parameters")
         optional = doParser.add_argument_group("optional arguments")
         optional.add_argument('--id',dest='id',required=False, help="id of the template to build")
         optional.add_argument('--junit',dest='junit',required=False, help="name of junit XML output file")
@@ -357,12 +358,12 @@ class Template(Cmd, CoreGlobal):
                     return 2
 
             #--
-            template=validate_json_file(doArgs.file)
+            template=check_extension_and_validate(doArgs.file)
             if template is None:
                 return 2
 
             if doArgs.id:
-                myAppliance = self.api.Users(self.login).Appliances(doArgs.id).Get()
+                myAppliance = self.api.Users(self.login).Appliances().Getall(Query="dbId=="+doArgs.id)
                 myAppliance = myAppliance.appliances.appliance
             else:
                 #Get template which correpond to the template file
@@ -476,7 +477,7 @@ class Template(Cmd, CoreGlobal):
                         TestSuite.to_file(f, [ts], prettyprint=False)
                 return 0
             except KeyError as e:
-                printer.out("unknown error in template json file", printer.ERROR)
+                printer.out("unknown error in template file", printer.ERROR)
 
         except ArgumentParserError as e:
             printer.out("ERROR: In Arguments: "+str(e), printer.ERROR)

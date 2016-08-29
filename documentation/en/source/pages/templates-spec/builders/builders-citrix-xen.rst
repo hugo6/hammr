@@ -15,14 +15,27 @@ This builder type is the default name provided by UForge AppCenter.
 
 The Citrix XenServer builder provides information for building XenServer compatible machine images.
 
-The Citrix XenServer builder section has the following definition in YAML. You can also use JSON.
+The Citrix XenServer builder section has the following definition when using YAML:
 
 .. code-block:: yaml
 
 	---
 	builders:
 	- type: Citrix Xen Server
+		# the rest of the definition goes here.
 
+If you are using JSON:
+
+.. code-block:: javascript
+
+	{
+	  "builders": [
+		{
+		  "type": "Citrix Xen Server",
+		  ...the rest of the definition goes here.
+		}
+	  ]
+	}
 
 Building a Machine Image
 ------------------------
@@ -38,7 +51,9 @@ For building an image, the valid keys are:
 Example
 -------
 
-The following example shows a Citrix XenServer builder in YAML. You can also use JSON.
+The following examples shows a Citrix XenServer builder.
+
+If you are using YAML:
 
 .. code-block:: yaml
 
@@ -47,3 +62,18 @@ The following example shows a Citrix XenServer builder in YAML. You can also use
 	- type: Citrix Xen Server
 	  hardwareSettings:
 	    memory: 1024
+
+If you are using JSON:
+
+.. code-block:: json
+
+	{
+	  "builders": [
+		{
+		  "type": "Citrix Xen Server",
+		  "hardwareSettings": {
+			"memory": 1024
+		  }
+		}
+	  ]
+	}

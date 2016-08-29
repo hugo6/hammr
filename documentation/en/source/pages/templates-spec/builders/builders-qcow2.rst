@@ -13,15 +13,27 @@ This builder type is the default name provided by UForge AppCenter.
 
 .. note:: This builder type name can be changed by your UForge administrator. To get the available builder types, please refer to :ref:`command-line-format`
 
-The QCOW2 builder section has the following definition, when using YAML. You can also use JSON.
+The QCOW2 builder section has the following definition when using YAML:
 
-.. code-block:: javascript
+.. code-block:: yaml
 
 	---
 	builders:
 	- type: QCOW2
-	  hardwareSettings:
-	    memory: 1024
+		# the rest of the definition goes here.
+
+If you are using JSON:
+
+.. code-block:: javascript
+
+	{
+	  "builders": [
+		{
+		  "type": "QCOW2",
+		  ...the rest of the definition goes here.
+		}
+	  ]
+	}
 
 Building a Machine Image
 ------------------------
@@ -38,7 +50,9 @@ Example
 -------
 
 
-The following example shows a YAML QCOW2 builder. You can also use JSON.
+The following examples shows a QCOW2 builder.
+
+If you are using YAML:
 
 .. code-block:: yaml
 
@@ -47,3 +61,18 @@ The following example shows a YAML QCOW2 builder. You can also use JSON.
 	- type: QCOW2
 	  hardwareSettings:
 	    memory: 1024
+
+If you are using JSON:
+
+.. code-block:: json
+
+	{
+	  "builders": [
+		{
+		  "type": "QCOW2",
+		  "hardwareSettings": {
+			"memory": 1024
+		  }
+		}
+	  ]
+	}

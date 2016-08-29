@@ -16,13 +16,27 @@ This builder type is the default name provided by UForge AppCenter.
 
 .. note:: This builder type name can be changed by your UForge administrator. To get the available builder types, please refer to :ref:`command-line-format`
 
-The SuseCloud builder section has the following definition when using YAML. You can also use JSON.
+The SuseCloud builder section has the following definition when using YAML:
 
-.. code-block:: javascript
+.. code-block:: yaml
 
 	---
 	builders:
 	- type: Suse Cloud
+		# the rest of the definition goes here.
+
+If you are using JSON:
+
+.. code-block:: javascript
+
+	{
+	  "builders": [
+		{
+		  "type": "SUSE Cloud",
+		  ...the rest of the definition goes here.
+		}
+	  ]
+	}
 
 Building a Machine Image
 ------------------------
@@ -78,9 +92,9 @@ Valid Keystone Versions
 Example
 -------
 
-The following example shows a YAML SuseCloud builder with all the information to build and publish a machine image to SuseCloud.
+The following examples shows a SuseCloud builder with all the information to build and publish a machine image to SuseCloud.
 
-.. note:: You can also use JSON.
+If you are using YAML:
 
 .. code-block:: yaml
 
@@ -98,11 +112,34 @@ The following example shows a YAML SuseCloud builder with all the information to
 	  imageName: joris-test
 	  description: CentOS Core template.
 
+If you are using JSON:
+
+.. code-block:: json
+
+	{
+	  "builders": [
+		{
+		  "type": "Suse Cloud",
+		  "account": {
+			"type": "Suse Cloud",
+			"name": "My SuseCloud Account",
+			"endpoint": "http://ow2-04.xsalto.net:9292/v1",
+			"keystoneEndpoint": "http://ow2-04.xsalto.net:5000/v2.0",
+			"username": "test",
+			"password": "password"
+		  },
+		  "tenant": "opencloudware",
+		  "imageName": "joris-test",
+		  "description": "CentOS Core template."
+		}
+	  ]
+	}
+
 
 Referencing the Cloud Account
 -----------------------------
 
-To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a yaml ``susecloud-account.yaml`` or json file ``susecloud-account.json``. The following example is in YAML.
+To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a yaml ``susecloud-account.yml``.
 
 .. code-block:: yaml
 
@@ -115,10 +152,29 @@ To help with security, the cloud account information can be referenced by the bu
 	  username: test
 	  password: password
 
+If you are using JSON, create a JSON file ``susecloud-account.json``:
+
+.. code-block:: json
+
+	{
+	  "accounts": [
+		{
+			"type": "Suse Cloud",
+			"name": "My SuseCloud Account",
+			"endpoint": "http://ow2-04.xsalto.net:9292/v1",
+			"keystoneEndpoint": "http://ow2-04.xsalto.net:5000/v2.0",
+			"username": "test",
+			"password": "password"
+		}
+	  ]
+	}
+
 
 The builder section can either reference by using ``file`` or ``name``.
 
 Reference by file:
+
+If you are using YAML:
 
 .. code-block:: yaml
 
@@ -126,13 +182,32 @@ Reference by file:
 	builders:
 	- type: Suse Cloud
 	  account:
-	    file: "/home/joris/accounts/susecloud-account.yaml"
+	    file: "/home/joris/accounts/susecloud-account.yml"
 	  tenant: opencloudware
 	  imageName: joris-test
 	  description: CentOS Core template.
 
+If you are using JSON:
+
+.. code-block:: json
+
+	{
+	  "builders": [
+		{
+		  "type": "Suse Cloud",
+		  "account": {
+			"file": "/home/joris/accounts/susecloud-account.json"
+		  },
+		  "tenant": "opencloudware",
+		  "imageName": "joris-test",
+		  "description": "CentOS Core template."
+		}
+	  ]
+	}
 
 Reference by name, note the cloud account must already be created by using ``account create``.
+
+If you are using YAML:
 
 .. code-block:: yaml
 
@@ -144,3 +219,21 @@ Reference by name, note the cloud account must already be created by using ``acc
 	  tenant: opencloudware
 	  imageName: joris-test
 	  description: CentOS Core template.
+
+If you are using JSON:
+
+.. code-block:: json
+
+	{
+	  "builders": [
+		{
+		  "type": "Suse Cloud",
+		  "account": {
+			"name": "My SuseCloud Account"
+		  },
+		  "tenant": "opencloudware",
+		  "imageName": "joris-test",
+		  "description": "CentOS Core template."
+		}
+	  ]
+	}

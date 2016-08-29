@@ -16,38 +16,26 @@ In this example we mark the “space” phyiscal partition as growable, i.e. the
 
 .. image:: /images/partitioning-ex2.png
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-		"partitioning": {
-		    "disks": [
-		      {
-		        "name": "sda",
-		        "type": "msdos",
-		        "size": 20480,
-		        "partitions": [
-		          {
-		            "number": 1,
-		            "fstype": "ext3",
-		            "size": 2048,
-		            "mountPoint": "/boot"
-		          },
-		          {
-		            "number": 2,
-		            "fstype": "linux-swap",
-		            "size": 1024
-		          },
-		          {
-		            "number": 3,
-		            "fstype": "ext3",
-		            "size": 64,
-		            "grow": true,
-		            "label": "space",
-		            "mountPoint": "/space"
-		          }
-		        ]
-		      }
-		    ]
-	    }
-	}
+	---
+	partitioning:
+	  disks:
+	  - name: sda
+		type: msdos
+		size: 20480
+		partitions:
+		- number: 1
+		  fstype: ext3
+		  size: 2048
+		  mountPoint: "/boot"
+		- number: 2
+		  fstype: linux-swap
+		  size: 1024
+		- number: 3
+		  fstype: ext3
+		  size: 64
+		  grow: true
+		  label: space
+		  mountPoint: "/space"
 

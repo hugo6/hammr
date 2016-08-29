@@ -15,9 +15,9 @@ Once the template is updated, build the images by running the command ``template
 
 .. code-block:: shell
 
-	$ hammr template build --file <path/filename>.yaml
-	Validating the template file [nginx-template.yaml] ...
-	OK: Syntax of template file [nginx-template.yaml] is ok
+	$ hammr template build --file <path/filename>.yml
+	Validating the template file [nginx-template.yml] ...
+	OK: Syntax of template file [nginx-template.yml] is ok
 	Generating 'ami' image (1/1)
 	|>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>| 100%: Done, created on ... |<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<|
 	OK: Generation 'ami' ok

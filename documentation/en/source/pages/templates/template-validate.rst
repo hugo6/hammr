@@ -9,9 +9,9 @@ Once you have created and modified your template file, it is best practice to va
 
 .. code-block:: shell
 
-	$ hammr validate --file <path/filename>.yaml
-	Validating the template file [/Users/james/nginx-template.yaml] ...
-	OK: Syntax of template file [/Users/james/nginx-template.yaml] is ok
+	$ hammr validate --file <path/filename>.yml
+	Validating the template file [/Users/james/nginx-template.yml] ...
+	OK: Syntax of template file [/Users/james/nginx-template.yml] is ok
 
 If there are any errors, this command will tell you.
 

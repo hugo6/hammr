@@ -82,7 +82,7 @@ def check_mandatory_create_account(iterables, type):
                     file = get_file(iterable["account"]["file"])
                     if file is None:
                         return 2
-                    data = generics_utils.check_json_syntax(file)
+                    data = generics_utils.check_extension_and_load_data(file)
                     if data is None:
                         return 2
                     if "accounts" in data:
@@ -96,9 +96,37 @@ def check_mandatory_create_account(iterables, type):
 
     return iterables
 
-def validate_json_file(file):
-    try:
+def check_extension_and_load_data(file):
+    fileExtension = os.path.splitext(file)[1]
+    if fileExtension == ".yml":
+        print "you provided a yaml file, checking the syntax..."
+        data = generics_utils.check_yaml_syntax(file)
+    elif fileExtension == ".json":
+        print "you provided a json file, checking the syntax..."
         data = generics_utils.check_json_syntax(file)
+    else:
+        printer.out("please provide a json or yaml file \n", printer.ERROR)
+        exit(1)
+    return data
+
+def check_extension_and_validate(file):
+    fileExtension = os.path.splitext(file)[1]
+    if fileExtension == ".yml":
+        print "you provided a yaml file, checking..."
+        template = validate_configurations_file(file, isJson=False)
+    elif fileExtension == ".json":
+        print "you provided a json file, checking..."
+        template = validate_configurations_file(file, isJson=True)
+    else:
+        printer.out("please provide a json or yaml file \n", printer.ERROR)
+        exit(1)
+    return template
+
+def validate_configurations_file(file, isJson):
+        if isJson:
+            data = generics_utils.check_json_syntax(file)
+        else:
+            data = generics_utils.check_yaml_syntax(file)
         if data is None:
             return
         #check manadatory fields
@@ -112,15 +140,7 @@ def validate_json_file(file):
 
         if "builders" in data:
             check_mandatory_builders(data["builders"])
-
         return data
-    except ValueError as e:
-        printer.out("JSON parsing error: "+str(e), printer.ERROR)
-        printer.out("Syntax of template file ["+file+"]: FAILED")
-    except IOError as e:
-        printer.out("unknown error template json file", printer.ERROR)
-
-
 
 #manage uforge exception
 def is_uforge_exception(e):

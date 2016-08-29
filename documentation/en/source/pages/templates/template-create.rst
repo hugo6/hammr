@@ -37,9 +37,9 @@ Once you have written and saved the minimal template you can then create the tem
 
 .. code-block:: shell
 
-	$ hammr template create --file <blueprint>.yaml
-	Validating the template file [/Users/james/nginx-template.yaml] ...
-	OK: Syntax of template file [/Users/james/nginx-template.yaml] is ok
+	$ hammr template create --file <blueprint>.yml
+	Validating the template file [/Users/james/nginx-template.yml] ...
+	OK: Syntax of template file [/Users/james/nginx-template.yml] is ok
 	Creating template from temporary [/var/folders/f6/8kljm7cx3h7fvb26tq18kw4m0000gn/T/hammr-15888/archive.tar.gz] archive ...
 	100%|#############################################################################|
 	OK: Template create: DONE

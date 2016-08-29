@@ -13,9 +13,9 @@ Once this file is ready, you create the cloud account on UForge by running the c
 
 .. code-block:: shell
 
-	$ hammr account create --file aws-account.yaml
-	Validating the template file [aws-account.yaml] ...
-	OK: Syntax of template file [aws-account.yaml] is ok
+	$ hammr account create --file aws-account.yml
+	Validating the template file [aws-account.yml] ...
+	OK: Syntax of template file [aws-account.yml] is ok
 	Create account for 'ami'...
 	OK: Account create successfully for [ami]
 

@@ -11,31 +11,23 @@ Due to the current package version calculation being based on a particular date 
 
 For example:
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "stack": {
-	    "name": "CentOS Base Template",
-	    "version": "6.4",
-	    "description": "This is a CentOS core template.",
-	    "os": {
-	      "name": "CentOS",
-	      "version": "6.4",
-	      "arch": "x86_64",
-	      "profile": "Minimal",
-	      "updateTo": "2013-06-15",
-	      "pkgs": [
-	        {
-	          "name": "php",
-	          "version": "5.5.3",
-	          "release": "23.el6_4",
-	          "arch": "i686"
-	        },
-	        {
-	          "name": "php-common",
-	          "fullName": "php-common-5.5.3-23.el6_4-i686.rpm"
-	        }
-	      ]
-	    }
-	  }
-	}
+    ---
+    stack:
+      name: CentOS Base Template
+      version: '6.4'
+      description: This is a CentOS core template.
+      os:
+        name: CentOS
+        version: '6.4'
+        arch: x86_64
+        profile: Minimal
+        updateTo: '2013-06-15'
+        pkgs:
+        - name: php
+          version: 5.5.3
+          release: 23.el6_4
+          arch: i686
+        - name: php-common
+          fullName: php-common-5.5.3-23.el6_4-i686.rpm

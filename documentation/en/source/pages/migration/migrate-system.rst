@@ -56,7 +56,7 @@ If you are simply moving your system from one cloud provider to another, you can
 
 .. code-block:: shell
 
-	$ hammr scan build --id 192 --file openstack-builder.yaml
+	$ hammr scan build --id 192 --file openstack-builder.yml
 	OK: Syntax of template file [openstack-builder.json] is ok
 	Generating 'openstack' image (1/1)
 	|>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>| 100%: Done, created on ... |<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<|

@@ -7,7 +7,7 @@ Creating the Template
 
 A configuration file, named the template, defines the contents of the machine image and any credential information required to generate and publish the image to the target environment.
 
-Lets create a template for the nginx machine image. Create a file ``nginx-template.yaml`` with the following content.
+Lets create a template for the nginx machine image. Create a file ``nginx-template.yml`` with the following content.
 
 .. note:: JSON can aslo be used.
 
@@ -33,21 +33,21 @@ A couple of things to point out at this stage. The ``stack`` section defines the
 	* ``os``: defines the operating system you want to use (in this case Ubuntu 12.04 64bit); the profile type (minimal); and any specific packages to install (nginx)
 	* ``installation``: defines lower level installation parameters. In this example a disk size of 8GB
 
-Now create the template using hammr. First validate that the configuration file does not have any syntax errors or missing mandatory values, by using the command ``template validate`` and passing your template file ``nginx-template.yaml`` (or your .json file is you are using JSON).
+Now create the template using hammr. First validate that the configuration file does not have any syntax errors or missing mandatory values, by using the command ``template validate`` and passing your template file ``nginx-template.yml`` (or your .json file is you are using JSON).
 
 .. code-block:: shell
 
-	$ hammr template validate --file nginx-template.yaml
-	Validating the template file [/Users/james/nginx-template.yaml] ...
-	OK: Syntax of template file [/Users/james/nginx-template.yaml] is ok
+	$ hammr template validate --file nginx-template.yml
+	Validating the template file [/Users/james/nginx-template.yml] ...
+	OK: Syntax of template file [/Users/james/nginx-template.yml] is ok
 
 Now run the command ``template create``.
 
 .. code-block:: shell
 
-	$ hammr template create --file nginx-template.yaml
-	Validating the template file [/Users/james/nginx-template.yaml] ...
-	OK: Syntax of template file [/Users/james/nginx-template.yaml] is ok
+	$ hammr template create --file nginx-template.yml
+	Validating the template file [/Users/james/nginx-template.yml] ...
+	OK: Syntax of template file [/Users/james/nginx-template.yml] is ok
 	Creating template from temporary [/var/folders/f6/8kljm7cx3h7fvb26tq18kw4m0000gn/T/hammr-15888/archive.tar.gz] archive ...
 	100%|#############################################################################|
 	OK: Template create: DONE
@@ -61,7 +61,6 @@ You can display all the templates created by using ``template list``.
 .. code-block:: shell
 
 	$ hammr template list
-	# to do, add output:
 	+-----+----------------------+---------+---------------------+---------------------+---------------------+--------+---------+-----+--------+
 	| Id  |         Name         | Version |         OS          |       Created       |    Last modified    | # Imgs | Updates | Imp | Shared |
 	+=====+======================+=========+=====================+=====================+=====================+========+=========+=====+========+

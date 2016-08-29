@@ -9,11 +9,21 @@ The following is a list of all the accepted timezone values that can be used for
 
 For example:
 
+If you are using YAML:
+
+.. code-block:: yaml
+
+	---
+	installation:
+	  timezone: Europe/Paris
+
+If you are using JSON:
+
 .. code-block:: json
 
 	{
 	  "installation": {
-	    "timezone": "Europe/Paris"
+		"timezone": "Europe/Paris"
 	  }
 	}
 

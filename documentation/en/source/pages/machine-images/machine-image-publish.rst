@@ -34,9 +34,9 @@ Publish the image(s) by running the command ``image publish``:
 
 .. code-block:: shell
 
-	$ hammr image publish --id <the id> --file <your-template>.yaml
-	Validating the template file [/tmp/centOS.yaml] ...
-	OK: Syntax of template file [/tmp/centOS.yaml] is ok
+	$ hammr image publish --id <the id> --file <your-template>.yml
+	Validating the template file [/tmp/centOS.yml] ...
+	OK: Syntax of template file [/tmp/centOS.yml] is ok
 	Publishing 'ami' image (1/1)
 	|>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>| 100%: Done, published o... |<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<|
 	OK: Publication to 'amazon' is ok

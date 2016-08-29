@@ -9,7 +9,7 @@ Once a template has been created, you can create a machine image from it. You ca
 
 To build a machine image, you need to add the ``builders`` section to your file. The ``builder`` section provides mandatory parameters to build (and for some environments register) the machine image. Each target environment requires different ``builders`` parameters. Refer to the documentation for more information.
 
-For security reasons, it is recommended not to add any cloud account information into the template file. Hammr provides various mechanisms to provide this cloud account information. The method we will use in this tutorial will be to register the cloud account information to the UForge server, then reference the cloud account tag name in the template. So create a file ``aws-account.yaml`` (or ``aws-account.json`` if you are using JSON) and add the following content:
+For security reasons, it is recommended not to add any cloud account information into the template file. Hammr provides various mechanisms to provide this cloud account information. The method we will use in this tutorial will be to register the cloud account information to the UForge server, then reference the cloud account tag name in the template. So create a file ``aws-account.yml`` (or ``aws-account.json`` if you are using JSON) and add the following content:
 
 .. code-block:: yaml
 
@@ -28,9 +28,9 @@ To create the cloud account, use the command ``account create``, where ``--file`
 
 .. code-block:: shell
 
-  $ hammr account create --file aws-account.yaml
-  Validating the template file [aws-account.yaml] ...
-  OK: Syntax of template file [aws-account.yaml] is ok
+  $ hammr account create --file aws-account.yml
+  Validating the template file [aws-account.yml] ...
+  OK: Syntax of template file [aws-account.yml] is ok
   Create account for 'ami'...
   OK: Account create successfully for [ami]
 
@@ -68,9 +68,9 @@ To build the machine image, use the command ``template build``.
 
 .. code-block:: shell
 
-  $ hammr template build --file nginx-template.yaml
-  Validating the template file [nginx-template.yaml] ...
-  OK: Syntax of template file [nginx-template.yaml] is ok
+  $ hammr template build --file nginx-template.yml
+  Validating the template file [nginx-template.yml] ...
+  OK: Syntax of template file [nginx-template.yml] is ok
   Generating 'ami' image (1/1)
   |>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>| 100%: Done, created on ... |<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<|
   OK: Generation 'ami' ok

@@ -12,16 +12,13 @@ When defining your machine image you set the OS and profile. UForge automaticall
 
 The following is a basic example for a CentOS 6.4 32-bit template with package for ``iotop`` added.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	    "os" : {
-	      "name" : "CentOS",
-	      "version" : "6.4",
-	      "arch" : "x86_64",
-	      "profile" : "Minimal"
-	      "pkgs" : {
-	        "name" : "iotop"
-	      }
-	    }
-	}
+	---
+	os:
+	  name: CentOS
+	  version: '6.4'
+	  arch: x86_64
+	  profile: Minimal
+	  pkgs:
+	  	name: iotop

@@ -9,45 +9,31 @@ The first thing a partitioning table needs is to declare one or more disks that 
 
 The example below describes 1 disk of 20GB.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "installation": {
-	    "partitioning": {
-	      "disks": [
-	        {
-	          "name": "sda",
-	          "type": "msdos",
-	          "size": 20480
-	        }
-	      ]
-	    }
-	  }
-	}
+	---
+	installation:
+	  partitioning:
+		disks:
+		- name: sda
+		  type: msdos
+		  size: 20480
 
 Example
 -------
 
 The following example describes 2 disks of 20GB each.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "installation": {
-	    "partitioning": {
-	      "disks": [
-	        {
-	          "name": "sda",
-	          "type": "msdos",
-	          "size": 20480
-	        },
-	        {
-	          "name": "sdb",
-	          "type": "msdos",
-	          "size": 20480
-	        }
-	      ]
-	    }
-	  }
-	}
+	---
+	installation:
+	  partitioning:
+		disks:
+		- name: sda
+		  type: msdos
+		  size: 20480
+		- name: sdb
+		  type: msdos
+		  size: 20480
 	

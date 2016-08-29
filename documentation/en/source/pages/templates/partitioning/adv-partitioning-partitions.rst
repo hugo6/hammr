@@ -18,39 +18,27 @@ The following example shows 3 physical partitions of a disk: ``/boot``, ``swap``
 
 .. image:: /images/partitioning-ex1.png
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-		"partitioning": {
-		    "disks": [
-		      {
-		        "name": "sda",
-		        "type": "msdos",
-		        "size": 20480,
-		        "partitions": [
-		          {
-		            "number": 1,
-		            "fstype": "ext3",
-		            "size": 2048,
-		            "mountPoint": "/boot"
-		          },
-		          {
-		            "number": 2,
-		            "fstype": "linux-swap",
-		            "size": 1024
-		          },
-		          {
-		            "number": 3,
-		            "fstype": "ext3",
-		            "size": 17408,
-		            "label": "space",
-		            "mountPoint": "/space"
-		          }
-		        ]
-		      }
-		    ]
-		}
-	}
+	---
+	partitioning:
+	  disks:
+	  - name: sda
+		type: msdos
+		size: 20480
+		partitions:
+		- number: 1
+		  fstype: ext3
+		  size: 2048
+		  mountPoint: "/boot"
+		- number: 2
+		  fstype: linux-swap
+		  size: 1024
+		- number: 3
+		  fstype: ext3
+		  size: 17408
+		  label: space
+		  mountPoint: "/space"
 
 .. note:: Note: In a partitioning table, at least one partition must be the ``/boot`` partition. In the above example this is one of the physical partitions. Furthermore, the sum of the physical partition sizes must be smaller or equal to the disk size.
 

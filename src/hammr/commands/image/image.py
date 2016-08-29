@@ -103,7 +103,7 @@ class Image(Cmd, CoreGlobal):
                                   description="Publish (upload and register) a built machine image to a target environment")
         mandatory = doParser.add_argument_group("mandatory arguments")
         mandatory.add_argument('--file', dest='file', required=True,
-                               help="json file providing the cloud account parameters required for upload and registration")
+                               help="yaml/json file providing the cloud account parameters required for upload and registration")
         optional = doParser.add_argument_group("optional arguments")
         optional.add_argument('--id', dest='id', required=False, help="id of the image to publish")
         return doParser
@@ -122,7 +122,7 @@ class Image(Cmd, CoreGlobal):
             file = generics_utils.get_file(doArgs.file)
             if file is None:
                 return 2
-            template = hammr_utils.validate_json_file(file)
+            template = check_extension_and_validate(file)
             if template is None:
                 return
 
@@ -183,7 +183,7 @@ class Image(Cmd, CoreGlobal):
                         i += 1
 
             except KeyError as e:
-                printer.out("unknown error template json file, key: " + str(e), printer.ERROR)
+                printer.out("unknown error template file, key: " + str(e), printer.ERROR)
 
         except ArgumentParserError as e:
             printer.out("ERROR: In Arguments: " + str(e), printer.ERROR)

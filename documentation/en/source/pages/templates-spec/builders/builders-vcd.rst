@@ -9,13 +9,27 @@ Default builder type: ``VMware vCloud Director``
 Require Cloud Account: Yes
 
 The VMware vCloud Director builder provides information for building VMware vCloud Director compatible machine images.
-The VMware VCD builder section has the following definition:
+The VMware VCD builder section has the following definition when using YAML:
 
 .. code-block:: yaml
 
 	---
 	builders:
 	- type: VMware vCloud Director
+		# the rest of the definition goes here.
+
+If you are using JSON:
+
+.. code-block:: javascript
+
+	{
+	  "builders": [
+		{
+		  "type": "VMware vCloud Director",
+		  ...the rest of the definition goes here.
+		}
+	  ]
+	}
 
 Building a Machine Image
 ------------------------
@@ -61,9 +75,9 @@ The VCD cloud account has the following valid keys:
 Example
 -------
 
-The following example shows a YAML VCD builder with all the information to build and publish a machine image to VMware vCloud Director.
+The following examples shows a VCD builder with all the information to build and publish a machine image to VMware vCloud Director.
 
-.. note:: You can also use JSON.
+If you are using YAML:
 
 .. code-block:: yaml
 
@@ -85,12 +99,41 @@ The following example shows a YAML VCD builder with all the information to build
 	  catalogName: myCatalog
 	  imageName: CentOS Core
 
+If you are using JSON:
+
+.. code-block:: json
+
+	{
+	  "builders": [
+		{
+		  "type": "VMware vCloud Director",
+		  "account": {
+			"type": "VMware vCloud Director",
+			"name": "My VCD Account",
+			"hostname": "10.1.1.2",
+			"username": "joris",
+			"password": "mypassword"
+		  },
+		  "hardwareSettings": {
+			"memory": 1024,
+			"hwType": 7
+		  },
+		  "installation": {
+			"diskSize": 10240
+		  },
+		  "orgName": "HQProd",
+		  "catalogName": "myCatalog",
+		  "imageName": "CentOS Core"
+		}
+	  ]
+	}
+
 Referencing the Cloud Account
 -----------------------------
 
-To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a yaml file ``vcd-account.yaml`` or json file ``vcd-account.json``.
+To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a yaml file ``vcd-account.yml``.
 
-.. code-block:: json
+.. code-block:: yaml
 
 	---
 	accounts:
@@ -100,9 +143,29 @@ To help with security, the cloud account information can be referenced by the bu
 	  username: joris
 	  password: mypassword
 
+
+If you are using JSON, create a JSON file ``vcd-account.json``:
+
+.. code-block:: json
+
+	{
+	  "accounts": [
+		{
+		  "type": "VMware vCloud Director",
+		  "name": "My VCD Account",
+		  "hostname": "10.1.1.2",
+		  "username": "joris",
+		  "password": "mypassword"
+		}
+	  ]
+	}
+
+
 The builder section can either reference by using ``file`` or ``name``.
 
 Reference by file:
+
+If you are using YAML:
 
 .. code-block:: yaml
 
@@ -110,7 +173,7 @@ Reference by file:
 	builders:
 	- type: VMware vCloud Director
 	  account:
-	    file: "/home/joris/accounts/vcd-account.yaml"
+	    file: "/home/joris/accounts/vcd-account.yml"
 	  hardwareSettings:
 	    memory: 1024
 	    hwType: 7
@@ -120,7 +183,35 @@ Reference by file:
 	  catalogName: myCatalog
 	  imageName: CentOS Core
 
+If you are using JSON:
+
+.. code-block:: json
+
+	{
+	  "builders": [
+		{
+		  "type": "VMware vCloud Director",
+		  "account": {
+			"file": "/home/joris/accounts/vcd-account.json"
+		  },
+		  "hardwareSettings": {
+			"memory": 1024,
+			"hwType": 7
+		  },
+		  "installation": {
+			"diskSize": 10240
+		  },
+		  "orgName": "HQProd",
+		  "catalogName": "myCatalog",
+		  "imageName": "CentOS Core"
+		}
+	  ]
+	}
+
+
 Reference by name, note the cloud account must already be created by using ``account create``.
+
+If you are using YAML:
 
 .. code-block:: yaml
 
@@ -138,3 +229,27 @@ Reference by name, note the cloud account must already be created by using ``acc
 	  catalogName: myCatalog
 	  imageName: CentOS Core
 
+If you are using JSON:
+
+.. code-block:: json
+
+	{
+	  "builders": [
+		{
+		  "type": "VMware vCloud Director",
+		  "account": {
+			"name": "My VCD Account"
+		  },
+		  "hardwareSettings": {
+			"memory": 1024,
+			"hwType": 7
+		  },
+		  "installation": {
+			"diskSize": 10240
+		  },
+		  "orgName": "HQProd",
+		  "catalogName": "myCatalog",
+		  "imageName": "CentOS Core"
+		}
+	  ]
+	}

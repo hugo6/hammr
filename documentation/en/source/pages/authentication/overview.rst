@@ -33,29 +33,28 @@ These parameters need to be passed each time you want to use the command-line.
 Using a Credential File
 =======================
 
-Rather than passing the authentication information as part of the command-line, you can instead store this information in a credential file (``credentials.json`` or ``credentials.yaml``) that will be used every time hammr is launched.  Hammr searches for this file in a sub-directory named ``.hammr`` located in the home directory of the user launching hammr.
+Rather than passing the authentication information as part of the command-line, you can instead store this information in a credential file (``credentials.json`` or ``credentials.yml``) that will be used every time hammr is launched.  Hammr searches for this file in a sub-directory named ``.hammr`` located in the home directory of the user launching hammr.
 
-To use a credential file, go to the ``.hammr`` sub-directory and create the file ``credentials.yaml``.
+To use a credential file, go to the ``.hammr`` sub-directory and create the file ``credentials.yml``.
 
 .. code-block:: shell
 
 	$ cd ~/.hammr
-	$ vi credentials.yaml
+	$ vi credentials.yml
 
 Add the authentication and UForge URL endpoint to this file, using the following format:
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-	  "user" : "root",
-	  "password" : "password",
-	  "url" : "https://uforge.usharesoft.com/api"
-	}
+	---
+	user: root
+	password: password
+	url: https://uforge.usharesoft.com/api
 
 As this file contains security information, it is recommended to change the permissions on this file so that only you can read or write to it:
 
 .. code-block:: shell
 
-	$ chmod 600 credentials.yaml
+	$ chmod 600 credentials.yml
 
 Now every time hammr is launched, you no longer need to provide the authentication information as part of the command-line.  Hammr will automatically use the information contained in this file.

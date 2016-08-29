@@ -11,22 +11,19 @@ These updates do not get taken into account for your current template when gener
 
 Ok great, but what if you actually wanted to include these updates in the next generation? Well, it’s a simple matter of updating the ``updateTo`` key of the stack section.
 
-.. code-block:: json
+.. code-block:: yaml
 
-	{
-		"stack": {
-		    "name": "CentOS Base Template",
-		    "version": "6.4",
-		    "description": "This is a CentOS core template.",
-		    "os": {
-		      "name": "CentOS",
-		      "version": "6.4",
-		      "arch": "x86_64",
-		      "profile": "Minimal",
-		      "updateTo": "2013-06-15"
-		    }
-		}	
-	}
+	---
+	stack:
+	  name: CentOS Base Template
+	  version: '6.4'
+	  description: This is a CentOS core template.
+	  os:
+		name: CentOS
+		version: '6.4'
+		arch: x86_64
+		profile: Minimal
+		updateTo: '2013-06-15'
 
 .. image:: /images/package-updates2.png
 

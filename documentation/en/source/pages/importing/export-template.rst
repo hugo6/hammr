@@ -7,7 +7,7 @@ Exporting a Template
 
 To illustrate exporting a template, let’s start from scratch. You will create a template, get the ID and export it with hammr.
 
-First create a new template with the YAML file ``centoscore-template.yaml``.
+First create a new template with the YAML file ``centoscore-template.yml``.
 
 .. note:: You can also use JSON.
 
@@ -34,7 +34,7 @@ First create a new template with the YAML file ``centoscore-template.yaml``.
 
 .. code-block:: shell
 
-	$ hammr template create --file centoscore-template.yaml
+	$ hammr template create --file centoscore-template.yml
 
 Now that the template is created you need to get the ``Id`` of the template you want to export. To do so, list the templates with the command ``template list``:
 
@@ -59,7 +59,7 @@ In this case the ``Id`` is ``669``. To export the template, run the command ``te
 
 Now if you uncompress the archive, you will find a file ``template.json``, which is the template YAML configuration file and a sub-directory ``config`` containing the two boot scripts.
 
-If you open the ``template.yaml`` file, you will notice that there is additional information added, including:
+If you open the ``template.json`` file, you will notice that there is additional information added, including:
 
 * ``pkgs``: this contains all the packages that are added by the os profile ``Minimal``
 * ``updateTo``: this is the date that the template initially created. This ensure that if you re-import this template (the creation date might be different) and build a machine image, the machine image will be identical to any machine image built from the original template

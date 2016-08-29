@@ -16,13 +16,27 @@ This builder type is the default name provided by UForge AppCenter.
 
 .. note:: This builder type name can be changed by your UForge administrator. To get the available builder types, please refer to :ref:`command-line-format`
 
-The Azure builder section has the following definition, when using YAML. You can also use JSON.
+The Azure builder section has the following definition when using YAML:
 
 .. code-block:: yaml
 
----
+  ---
   builders:
   - type: Microsoft Azure
+    # the rest of the definition goes here.
+
+If you are using JSON:
+
+.. code-block:: javascript
+
+  {
+    "builders": [
+      {
+        "type": "Microsoft Azure",
+        ...the rest of the definition goes here.
+      }
+    ]
+  }
 
 
 Building a Machine Image
@@ -73,9 +87,9 @@ The Azure cloud account has the following valid keys:
 Example
 -------
 
-The following example shows a YAML Azure builder with all the information to build and publish a machine image to Azure.
+The following examples shows an Azure builder with all the information to build and publish a machine image to Azure.
 
-.. note:: You can also use JSON.
+If you are using YAML:
 
 .. code-block:: yaml
 
@@ -89,10 +103,29 @@ The following example shows a YAML Azure builder with all the information to bui
     storageAccount: mystorageaccount
     region: Central US
 
+If you are using JSON:
+
+.. code-block:: json
+
+  {
+    "builders": [
+      {
+        "type": "Microsoft Azure",
+        "account": {
+          "type": "Microsoft Azure",
+          "name": "My Azure account",
+          "publishsettings": "/path/to/Pay-As-You-Go-4-25-2016-credentials.publishsettings"
+        },
+        "storageAccount":"mystorageaccount",
+        "region":"Central US"
+      }
+    ]
+  }
+
 Referencing the Cloud Account
 -----------------------------
 
-To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a YAML file ``azure-account.yaml`` or JSON file ``azure-account.json``.
+To help with security, the cloud account information can be referenced by the builder section. This example is the same as the previous example but with the account information in another file. Create a YAML file ``azure-account.yml``.
 
 .. code-block:: yaml
 
@@ -102,9 +135,26 @@ To help with security, the cloud account information can be referenced by the bu
     name: My Azure account
     publishsettings: "/path/to/Pay-As-You-Go-date-credentials.publishsettings"
 
+
+If you are using JSON, create a JSON file ``azure-account.json``:
+
+.. code-block:: json
+
+  {
+    "accounts": [
+      {
+        "type": "Microsoft Azure",
+        "name": "My Azure account",
+        "publishsettings": "/path/to/Pay-As-You-Go-date-credentials.publishsettings"
+      }
+    ]
+  }
+
 The builder section can either reference by using ``file`` or ``name``.
 
 Reference by file:
+
+If you are using YAML:
 
 .. code-block:: yaml
 
@@ -112,11 +162,30 @@ Reference by file:
   builders:
   - type: Microsoft Azure
     account:
-      file: "/home/joris/accounts/azure-account.yaml"
+      file: "/home/joris/accounts/azure-account.yml"
     storageAccount: mystorageaccount
     region: Central US
 
+If you are using JSON:
+
+.. code-block:: json
+
+  {
+    "builders": [
+      {
+        "type": "Microsoft Azure",
+        "account": {
+              "file": "/home/joris/accounts/azure-account.json"
+        },
+        "storageAccount":"mystorageaccount",
+        "region":"Central US"
+      }
+    ]
+  }
+
 Reference by name, note the cloud account must already be created by using ``account create``.
+
+If you are using YAML:
 
 .. code-block:: yaml
 
@@ -127,3 +196,20 @@ Reference by name, note the cloud account must already be created by using ``acc
       name: My Azure Account
     storageAccount: mystorageaccount
     region: Central US
+
+If you are using JSON:
+
+.. code-block:: json
+
+  {
+    "builders": [
+      {
+        "type": "Microsoft Azure",
+        "account": {
+              "name": "My Azure Account"
+        },
+        "storageAccount":"mystorageaccount",
+        "region":"Central US"
+      }
+    ]
+  }

@@ -14,13 +14,27 @@ This builder type is the default name provided by UForge AppCenter.
 .. note:: This builder type name can be changed by your UForge administrator. To get the available builder types, please refer to :ref:`command-line-format`
 
 The KVM builder provides information for building KVM (Kernel-based Virtual Machine) compatible machine images.
-The KVM builder section has the following definition, when using YAML. You can also use JSON.
+The KVM builder section has the following definition when using YAML:
 
-.. code-block:: javascript
+.. code-block:: yaml
 
 	---
 	builders:
 	- type: KVM
+		# the rest of the definition goes here.
+
+If you are using JSON:
+
+.. code-block:: javascript
+
+	{
+	  "builders": [
+		{
+		  "type": "KVM",
+		  ...the rest of the definition goes here.
+		}
+	  ]
+	}
 
 Building a Machine Image
 ------------------------
@@ -36,9 +50,9 @@ For building an image, the valid keys are:
 Example
 -------
 
-The following example shows a YAML KVM builder. 
+The following examples shows a KVM builder.
 
-.. note:: You can also use JSON.
+If you are using YAML:
 
 .. code-block:: yaml
 
@@ -47,3 +61,18 @@ The following example shows a YAML KVM builder.
 	- type: KVM
 	  hardwareSettings:
 	    memory: 1024
+
+If you are using JSON:
+
+.. code-block:: json
+
+	{
+	  "builders": [
+		{
+		  "type": "KVM",
+		  "hardwareSettings": {
+			"memory": 1024
+		  }
+		}
+	  ]
+	}
